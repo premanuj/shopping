@@ -5,10 +5,10 @@ block content
   p Welcome to #{title}
   hr
   div
-    h2 API: Admin Login
-    description: This api is used to log in for admin
-    p api_url: /admin
-    form(action="/admin/login", method="post")
+    h2 API: User Login
+    description: This api is used to log in for user
+    p api_url: /login
+    form(action="/user/login", method="post")
       level email
       input(name="email", type="text")
       level password

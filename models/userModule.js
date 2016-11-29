@@ -2,11 +2,12 @@ var connection = require('./dbConnection');
 var async = require('async');
 
 module.exports.registration = function(arrUser, callback){
-  var sql = "INSERT INTO user (username, email, password, image_url, about_me) VALUES (?, ?, ?, ?, ?)";
+  var sql = "INSERT INTO user (username, email, password, image_url, access_token, verification_token, verification_status, about_me) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
   connection.query(sql, arrUser, function(error, rows){
     if(error){
+      console.log(error);
       callback(false);
-      rerurn 1;
+      return 1;
     }else {
       callback(true)
       return 0 ;
@@ -14,7 +15,7 @@ module.exports.registration = function(arrUser, callback){
   });
 }
 
-module.exports.verification_email = function(email, verification_token, callback){
+module.exports.verify_email = function(email, verification_token, callback){
   var str = "<h2> Welcome to shopping ............ </h2>";
       str += "<p>Congratulation, You have created your account successfully.</p>";
       str += "<p>Get the best services </p>";
