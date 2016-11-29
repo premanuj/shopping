@@ -1,0 +1,34 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  hr
+  div
+    h2 API: Admin Login
+    description: This api is used to log in for admin
+    p api_url: /admin
+    form(action="/admin/login", method="post")
+      level email
+      input(name="email", type="text")
+      level password
+      input(type="password", name="password")
+      input(type="submit")
+    hr
+  div
+    h2 API: User Registration
+    description: This api is used to register a new user
+    p api_url: /user/registration
+    form(action="/user/registration", method="post")
+      level email
+      input(name="email", type="text")
+      level username
+      input(type="text", name="username")
+      level password
+      input(type="password", name="password")
+      level about_me
+      input(type="text", name="about_me")
+      level image_url
+      input(type="text", name="image_url")
+      input(type="submit")
+    hr
