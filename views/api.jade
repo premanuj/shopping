@@ -8,6 +8,7 @@ block content
     h2 API: User Login
     description: This api is used to log in for user
     p api_url: /login
+    p method: POST
     form(action="/user/login", method="post")
       level email
       input(name="email", type="text")
@@ -19,6 +20,7 @@ block content
     h2 API: User Registration
     description: This api is used to register a new user
     p api_url: /user/registration
+    p method: POST
     form(action="/user/registration", method="post")
       level email
       input(name="email", type="text")
@@ -32,3 +34,79 @@ block content
       input(type="text", name="image_url")
       input(type="submit")
     hr
+  div
+    h2 API: User profile
+    description: This api is used to register a new user
+    p api_url: /user/userprofile
+    p method: GET
+    form(action="/user/userprofile", method="get")
+      level id
+      input(name="user_id", type="text")
+      input(type="submit")
+    hr
+    div
+      h2 API: New Order
+      description: This api is used to register a new user
+      p api_url: /order/neworder
+      p method: POST
+      form(action="/order/neworder", method="post")
+        level id
+        input(name="user_id", type="text")
+        level items:
+        input(name="items", type="text")
+        level store
+        input(name="store", type="text")
+        level notes
+        input(name="notes", type="text")
+        level delivery_address
+        input(name="delivery_address", type="text")
+        level delivery_time_from
+        input(name="delivery_time_from", type="text")
+        level delivery_time_to
+        input(name="delivery_time_to", type="text")
+        level payment_type
+        input(name="payment_type", type="text")
+        level estimated_weight
+        input(name="estimated_weight", type="text")
+        input(type="submit")
+      hr
+      div
+        h2 API: Update Order Status
+        description: This api is used to update the order status by user
+        p api_url: /order/changeOrderStatus
+        p method: GET
+        form(action="/order/changeOrderStatus", method="post")
+          level user_id
+          input(name="user_id", type="text")
+          level status
+          input(name="status", type="text")
+          level list_id
+          input(name="list_id" type="text")
+          input(type="submit")
+        hr
+      div
+        h2 API: Rate Order
+        description: This api is used to rate the order having status 'finished' by user
+        p api_url: /order/rateOrder
+        p method: GET
+        form(action="/order/rateOrder", method="post")
+          level user_id
+          input(name="user_id", type="text")
+          level rate
+          input(name="rate", type="text")
+          level list_id
+          input(name="list_id" type="text")
+          input(type="submit")
+        hr
+      div
+        h2 API: Delete Order
+        description: This api is used to delete the order having status 'active' or 'deactive' by user. User cannot delete the order if its status either 'in-progress' or 'finished'
+        p api_url: /order/deleteOrder
+        p method: GET
+        form(action="/order/deleteOrder", method="post")
+          level user_id
+          input(name="user_id", type="text")
+          level list_id
+          input(name="list_id" type="text")
+          input(type="submit")
+        hr

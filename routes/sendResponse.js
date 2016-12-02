@@ -46,11 +46,11 @@ exports.sendErrorMessage = function(msg, res){
 
 exports.successStatusMsg = function(msg, res){
   var successResponse = {
-    status: constant.responseStatus.SHOW_DATA,
+    status: constant.responseStatus.SHOW_MESSAGE,
     message: msg,
     data: {}
   }
-  sendData(successResponse, msg);
+  sendData(successResponse, res);
 }
 
 exports.sendData = function(data, res){
