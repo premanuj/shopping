@@ -215,8 +215,8 @@ router.post('/orderOffer', function(req, res, next){
 */
 
 
-router.post('/acceptOffer'){
-
-}
+router.post('/acceptOffer', function(req, res, next){
+  var 
+});
 
 module.exports = router;
