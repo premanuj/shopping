@@ -50,7 +50,7 @@ block content
       p api_url: /order/neworder
       p method: POST
       form(action="/order/neworder", method="post")
-        level id
+        level user_id
         input(name="user_id", type="text")
         level items:
         input(name="items", type="text")
@@ -88,7 +88,7 @@ block content
         h2 API: Rate Order
         description: This api is used to rate the order having status 'finished' by user
         p api_url: /order/rateOrder
-        p method: GET
+        p method: POST
         form(action="/order/rateOrder", method="post")
           level user_id
           input(name="user_id", type="text")
@@ -102,11 +102,82 @@ block content
         h2 API: Delete Order
         description: This api is used to delete the order having status 'active' or 'deactive' by user. User cannot delete the order if its status either 'in-progress' or 'finished'
         p api_url: /order/deleteOrder
-        p method: GET
+        p method: POST
         form(action="/order/deleteOrder", method="post")
           level user_id
           input(name="user_id", type="text")
           level list_id
           input(name="list_id" type="text")
+          input(type="submit")
+        hr
+      div
+        h2 API: Offer Order
+        description: This api is used to offer an order by the user'
+        p api_url: /order/orderOffer
+        p method: POST
+        form(action="/order/orderOffer", method="post")
+          level client_id
+          input(name="client_id", type="text")
+          level freelancer_id
+          input(name="freelancer_id", type="text")
+          level list_id
+          input(name="list_id" type="text")
+          input(type="submit")
+      div
+        h2 API: Accept Offer Order
+        description: This api is used to accept an offer by the user to wants to hire. After user accept the offer, order status automatically changed to in-progress.
+        p api_url: /order/acceptOffer
+        p method: POST
+        form(action="/order/acceptOffer", method="post")
+          level list_id
+          input(name="list_id", type="text")
+          level user_id
+          input(name="user_id", type="text")
+          level offer_id
+          input(name="offer_id" type="text")
+          input(type="submit")
+        hr
+      div
+        h2 API: Review by client
+        description: This api is used to post review by client User who had hired the freelancer.
+        p api_url: /order/clientReview
+        p method: POST
+        form(action="/order/clientReview", method="post")
+          level list_id
+          input(name="list_id", type="text")
+          level client_id
+          input(name="client_id", type="text")
+          level freelancer_id
+          input(name="freelancer_id", type="text")
+          level review_by_client
+          input(name="review_by_client" type="text")
+          input(type="submit")
+        hr
+      div
+        h2 API: Review by Freelancer
+        description: This api is used to post review by freelancer User who had been hired by client.
+        p api_url: /order/freelancerReview
+        p method: POST
+        form(action="/order/freelancerReview", method="post")
+          level list_id
+          input(name="list_id", type="text")
+          level client_id
+          input(name="client_id" type="text")
+          level freelancer_id
+          input(name="freelancer_id" type="text")
+          level review_by_client
+          input(name="review_by_client" type="text")
+          input(type="submit")
+        hr
+      div
+        h2 API: Change order status to finish.
+        description: This api is used to post review by freelancer User who had been hired by client.
+        p api_url: /order/finishOrder
+        p method: POST
+        form(action="/order/finishOrder", method="post")
+          level list_id
+          input(name="list_id", type="text")
+          level user_id
+          input(name="user_id" type="text")
           input(type="submit")
         hr
