@@ -21,7 +21,7 @@ block content
     description: This api is used to register a new user
     p api_url: /user/registration
     p method: POST
-    form(action="/user/registration", method="post")
+    form(action="/user/registration", method="post", enctype="multipart/form-data")
       level email
       input(name="email", type="text")
       level username
@@ -31,7 +31,7 @@ block content
       level about_me
       input(type="text", name="about_me")
       level image_url
-      input(type="text", name="image_url")
+      input(type="file", name="image_url")
       input(type="submit")
     hr
   div
@@ -177,6 +177,18 @@ block content
         form(action="/order/finishOrder", method="post")
           level list_id
           input(name="list_id", type="text")
+          level user_id
+          input(name="user_id" type="text")
+          input(type="submit")
+        hr
+      div
+        h2 API: Approve user by admin.
+        description: This api is used to post review by freelancer User who had been hired by client.
+        p api_url: /admin/approveUser
+        p method: POST
+        form(action="/admin/approveUser", method="post")
+          level admin_id
+          input(name="admin_id", type="text")
           level user_id
           input(name="user_id" type="text")
           input(type="submit")

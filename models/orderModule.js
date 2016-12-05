@@ -9,11 +9,21 @@ module.exports.neworder = function(arrOrder, callback) {
             console.error(err);
             callback(false);
         } else {
-          // var id = lastInsertId();
-          // var client_id = arrOrder[8];
-          // var date = new Date();
-          // var sql_addOffer = 'INSERT INTO offer_list ()';
-            callback(true);
+          var id = orderResult.insertId;
+          var client_id = arrOrder[8];
+          var date = new Date();
+          var status = 'open'
+          console.log(date);
+          var addOffer = [id, client_id, status, date];
+          var sql_addOffer = 'INSERT INTO offer_list (list_id, client_id, status, date) VALUES (?, ?, ?, ?)';
+          connection.query(sql_addOffer, addOffer, function(error, resultRows, fields){
+            if (error) {
+              console.error(error);
+              callback(false);
+            } else {
+              callback(true);
+            }
+          });
         }
     });
 }

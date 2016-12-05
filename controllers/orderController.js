@@ -48,11 +48,13 @@ router.post('/neworder', function(req, res, next) {
         });
 });
 
+
+
 /*
  *---------------------------------------------------------------------------------------------------
  *This API is used to change the order status by the user
  *INPUTS: user_id, list_id
- *OUTPUT: change active status to
+ *OUTPUT: change status of order by the user who wants to hire freelancer
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -90,7 +92,7 @@ router.post('/changeOrderStatus', function(req, res, next) {
  *---------------------------------------------------------------------------------------------------
  *This API is used to change the rate the order by the user after the status is changed to finshed.
  *INPUTS: user_id, list_id, rate
- *OUTPUT: change active status to
+ *OUTPUT: rate an order
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -235,9 +237,9 @@ router.post('/orderOffer', function(req, res, next) {
 
 /*
  *---------------------------------------------------------------------------------------------------
- *This API is used to deactivate an order status
- *INPUTS: user_id, list_id, status
- *OUTPUT: change active status to
+ *This API is used to accept an offer by client who wants to hire
+ *INPUTS: offer_id, list_id, user_id
+ *OUTPUT: change offer status status to accepted.
  *----------------------------------------------------------------------------------------------------
  */
 
@@ -296,6 +298,14 @@ router.post('/acceptOffer', function(req, res, next) {
         });
 });
 
+/*
+ *---------------------------------------------------------------------------------------------------
+ *This API is used to mark an order status finish
+ *INPUTS: list_id, user_id
+ *OUTPUT: change order status to finish.
+ *----------------------------------------------------------------------------------------------------
+ */
+
 router.post('/finishOrder', function(req, res, next) {
     var list_id = req.body.list_id;
     var user_id = req.body.user_id;
@@ -303,16 +313,36 @@ router.post('/finishOrder', function(req, res, next) {
 
     var arrOrder = [status, list_id, user_id];
 
-    orderModule.finishOrder(arrOrder, function(result) {
-        if (result === false) {
-            var errorMsg = "Error Occured!!!";
-            sendResponse.sendErrorMessage(errorMsg, res);
-        } else {
-            var successMsg = 'Order status has been marked as finished. Now users can review on the order by both who hires and who hires';
-            sendResponse.successStatusMsg(successMsg, res);
-        }
-    });
+    async.waterfall([
+            function(callback) {
+                useFunction.checkFeilds(res, arrOrder, callback);
+            }
+        ],
+        function(error, result) {
+                if (error) {
+                    var errorMsg = "Unable to do a new order for this user.";
+                    sendResponse.sendErrorMessage(errorMsg, res);
+                } else {
+                    orderModule.finishOrder(arrOrder, function(result) {
+                        if (result === false) {
+                            var errorMsg = "Error Occured!!!";
+                            sendResponse.sendErrorMessage(errorMsg, res);
+                        } else {
+                            var successMsg = 'Order status has been marked as finished. Now users can review on the order by both who hires and who hires';
+                            sendResponse.successStatusMsg(successMsg, res);
+                        }
+                    });
+                }
+        });
 });
+
+/*
+ *---------------------------------------------------------------------------------------------------
+ *This API is used to post review by client who hires freelancer
+ *INPUTS: list_id, client_id, freelancer_id, review_by_client,
+ *OUTPUT: post review by client for freelancer work.
+ *----------------------------------------------------------------------------------------------------
+ */
 
 router.post('/clientReview', function(req, res, next) {
     var list_id = req.body.list_id;
@@ -326,25 +356,46 @@ router.post('/clientReview', function(req, res, next) {
     var arrOrder = [list_id, status];
     var arrReview = [review_by_client, client_id, freelancer_id, list_id];
 
-    orderModule.checkForFinishOrder(arrOrder, function(result) {
-        if (result === false) {
-            var errorMsg = "Only order with finished order can be Reviewed";
-            sendResponse.sendErrorMessage(errorMsg, res);
-        } else {
-            orderModule.clientReview(arrReview, function(result) {
-                if (result === false) {
-                    var errorMsg = "Error Occured"
+    async.waterfall([
+            function(callback) {
+                useFunction.checkFeilds(res, arrReview, callback);
+            }
+        ],
+        function(error, result) {
+                if (error) {
+                    var errorMsg = "Unable to do a new order for this user.";
                     sendResponse.sendErrorMessage(errorMsg, res);
                 } else {
-                    var successMsg = 'Order reviewed successfully by the client for the freelancer to whom he hired.';
-                    sendResponse.successStatusMsg(successMsg, res);
+                    orderModule.checkForFinishOrder(arrOrder, function(result) {
+                        if (result === false) {
+                            var errorMsg = "Only order with finished order can be Reviewed";
+                            sendResponse.sendErrorMessage(errorMsg, res);
+                        } else {
+                            orderModule.clientReview(arrReview, function(result) {
+                                if (result === false) {
+                                    var errorMsg = "Error Occured"
+                                    sendResponse.sendErrorMessage(errorMsg, res);
+                                } else {
+                                    var successMsg = 'Order reviewed successfully by the client for the freelancer to whom he hired.';
+                                    sendResponse.successStatusMsg(successMsg, res);
+                                }
+                            });
+                        }
+                    });
                 }
-            });
 
-        }
-    });
+        });
 });
 
+
+
+/*
+ *---------------------------------------------------------------------------------------------------
+ *This API is used to accept an offer by freelancer who wants to be hired.
+ *INPUTS: list_id, client_id, freelancer_id, review_by_client
+ *OUTPUT: post review by freelancer for whom he works
+ *----------------------------------------------------------------------------------------------------
+ */
 
 router.post('/freelancerReview', function(req, res, next) {
     var list_id = req.body.list_id;
@@ -352,43 +403,54 @@ router.post('/freelancerReview', function(req, res, next) {
     var freelancer_id = req.body.freelancer_id;
     var review_by_client = req.body.review_by_client;
     var status = 'finish';
-    //  var offerStatus = 'active';
 
     var arrOrder = [list_id, status];
     var arrReview = [review_by_client, client_id, list_id];
 
-    orderModule.checkForFinishOrder(arrOrder, function(result) {
-        if (result === false) {
-            var errorMsg = "Only order with finished order can be Reviewed";
-            sendResponse.sendErrorMessage(errorMsg, res);
-        } else {
-          if (checkFreelancer(list_id, freelancer_id)===false) {
-            var errorMsg = "You are not allowed to post review.";
-            sendresponse.sendErrorMessage(errorMsg, res);
-          } else {
-            orderModule.freelancerReview(arrReview, function(result) {
-                if (result === false) {
-                    var errorMsg = "Only order with finished order can be Reviewed"
+    async.waterfall([
+            function(callback) {
+                useFunction.checkFeilds(res, arrReview, callback);
+            }
+        ],
+        function(error, result) {
+                if (error) {
+                    var errorMsg = "Unable to do a new order for this user.";
                     sendResponse.sendErrorMessage(errorMsg, res);
                 } else {
-                    var successMsg = 'Order reviewed successfully by the client for the freelancer to whom he hired.';
-                    sendResponse.successStatusMsg(successMsg, res);
+                    orderModule.checkForFinishOrder(arrOrder, function(result) {
+                        if (result === false) {
+                            var errorMsg = "Only order with finished order can be Reviewed";
+                            sendResponse.sendErrorMessage(errorMsg, res);
+                        } else {
+                            if (checkFreelancer(list_id, freelancer_id) === false) {
+                                var errorMsg = "You are not allowed to post review.";
+                                sendresponse.sendErrorMessage(errorMsg, res);
+                            } else {
+                                orderModule.freelancerReview(arrReview, function(result) {
+                                    if (result === false) {
+                                        var errorMsg = "Only order with finished order can be Reviewed"
+                                        sendResponse.sendErrorMessage(errorMsg, res);
+                                    } else {
+                                        var successMsg = 'Order reviewed successfully by the client for the freelancer to whom he hired.';
+                                        sendResponse.successStatusMsg(successMsg, res);
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
-            });
-          }
-        }
-    });
+        });
 });
 
-function checkFreelancer(list_id, freelancer_id){
-  var arrFreelancer = [list_id, freelancer_id];
-  orderModule.checkFreelancer(arrFreelancer, function(result){
-    if (result===true) {
-      return true;
-    } else {
-      return false;
-    }
-  });
+function checkFreelancer(list_id, freelancer_id) {
+    var arrFreelancer = [list_id, freelancer_id];
+    orderModule.checkFreelancer(arrFreelancer, function(result) {
+        if (result === true) {
+            return true;
+        } else {
+            return false;
+        }
+    });
 }
 
 module.exports = router;

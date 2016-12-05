@@ -6,6 +6,8 @@ var async = require('async');
 var randomstring = require('just.randomstring');
 var userModule = require('../models/userModule');
 var md5 = require('md5');
+var multer = require('multer');
+var upload = multer({dest: 'uploads/'});
 
 
 /*module for secure encryption */
@@ -60,14 +62,18 @@ router.post('/login', function(req, res, next) {
  *----------------------------------------------
  */
 
-router.post('/registration', function(req, res, next) {
+router.post('/registration', upload.single('image_url'), function(req, res, next) {
     //receiving form fields
     var email = req.body.email;
     var password = req.body.password;
     var username = req.body.username;
-    var image_url = req.body.image_url;
+    var image_url = req.file.filename;
     var about_me = req.body.about_me;
+    password = md5(password);
     var arrFeilds = [username, email, password, image_url, about_me];
+    console.log('array fields :');
+    console.log(arrFeilds);
+    console.log(req.file.filename);
 
     var access_token;
     var verification_token;
@@ -96,7 +102,7 @@ router.post('/registration', function(req, res, next) {
                          */
                         function(callback) {
                             //Encryption for password
-                            callback(password);
+                            callback(null, password);
 
                         },
                         function(callback) {
@@ -121,11 +127,12 @@ router.post('/registration', function(req, res, next) {
                         access_token = results[1];
                         verification_token = results[2];
                         var sendInputs = [username, email, password, image_url, access_token, verification_token, about_me];
+                        console.error('password:'+password);
                         userModule.registration(sendInputs, function(result) {
                             if (result) {
                                 userModule.verify_email(email, verification_token, function(emailstatus) {
                                     if (emailstatus) {
-                                        var successMsg = "Message sent successfully."
+                                        var successMsg = "User registered successfully."
                                         console.log(successMsg);
                                         sendResponse.successStatusMsg(successMsg, res);
                                     } else {
@@ -134,6 +141,8 @@ router.post('/registration', function(req, res, next) {
                                     }
                                 });
                             } else {
+                              console.log('Result: ');
+                              console.log(result);
                                 errorMsg = "User Registration Failed!";
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             }

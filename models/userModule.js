@@ -8,10 +8,8 @@ module.exports.registration = function(arrUser, callback) {
         if (error) {
             console.log(error);
             callback(false);
-            return 1;
         } else {
             callback(true)
-            return 0;
         }
     });
 }
