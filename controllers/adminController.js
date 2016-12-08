@@ -29,6 +29,7 @@ router.post('/login', function(req, res, next){
 
 });
 
+
 router.post('/approveUser', function(req, res, next){
   var admin_id = req.body.admin_id;
   var user_id = req.body.user_id;

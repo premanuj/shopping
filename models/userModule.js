@@ -2,8 +2,7 @@ var connection = require('./dbConnection');
 var async = require('async');
 
 module.exports.registration = function(arrUser, callback) {
-    console.log('registration: ' + arrUser);
-    var sql = "INSERT INTO user (username, email, password, image_url, access_token, verification_token, about_me) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    var sql = "INSERT INTO user (username, email, password, image_url, access_token, verification_token) VALUES (?, ?, ?, ?, ?, ?)";
     connection.query(sql, arrUser, function(error, rows) {
         if (error) {
             console.log(error);
@@ -15,29 +14,59 @@ module.exports.registration = function(arrUser, callback) {
 }
 
 module.exports.verify_email = function(email, verification_token, callback) {
-        var str = "<h2> Welcome to shopping ............ </h2>";
-        str += "<p>Congratulation, You have created your account successfully.</p>";
-        str += "<p>Get the best services </p>";
-        str += "<p>Please click <a href = 'verification_url.com/" + verification_token + "'>This Link</a> to verify your account. </p>"
-        str += "<p>Once you verify your account your account will be approve by our admin and then you will able to take all features of our services. </p>";
-        str += "</br><strong>Thank You </strong>";
-        var mailOption = {
-            from: 'test mailer <testmailfornode@gmail.com>',
-            to: email,
-            subject: 'Please Verify your ccount',
-            html: str
-        };
+  // if (account==='new') {
+  //   account='user_verification';
+  // }else {
+  //   account = 'reset_passwordLink';
+  // }
+    var str = "<h2> Welcome to shopping ............ </h2>";
+    str += "<p>Congratulation, You have created your account successfully.</p>";
+    str += "<p>Get the best services </p>";
+    str += "<p>Please click <a href = 'http://127.0.0.1:3030/user/user_verification/?verification_token=" + verification_token + "'>This Link</a> to verify your account. </p>"
+    str += "<p>Once you verify your account your account will be approve by our admin and then you will able to take all features of our services. </p>";
+    str += "</br><strong>Thank You </strong>";
+    var mailOption = {
+        from: 'test mailer <testmailfornode@gmail.com>',
+        to: email,
+        subject: 'Please Verify your ccount',
+        html: str
+    };
 
-        transporter.sendMail(mailOption, function(error, info) {
+    transporter.sendMail(mailOption, function(error, info) {
+        if (error) {
+            console.error(error);
+            callback(false);
+        } else {
+            callback(true);
+
+        }
+    });
+
+}
+
+module.exports.user_verification = function(verification_token, status, callback) {
+      //  var sql = "SELECT user_id FROM user WHERE verification_token = ? AND verification_status = '0'";
+        var sql_verificaion = "UPDATE user SET verification_status = ? WHERE verification_token = ?";
+        var arrVerification = [status, verification_token];
+        connection.query(sql_verificaion, arrVerification, function(error, result) {
             if (error) {
-                console.error(error);
                 callback(false);
             } else {
                 callback(true);
-
             }
         });
+    }
 
+
+module.exports.about_me = function(arrAbout, callback) {
+        var sql_verificaion = "UPDATE user SET about_me = ? WHERE user_id = ?";
+        connection.query(sql_verificaion, arrAbout, function(error, result) {
+            if (error) {
+                callback(false);
+            } else {
+                callback(true);
+            }
+        });
     }
     /*
      *--------------------------------------------------
@@ -64,14 +93,77 @@ module.exports.checkUsername = function(username, callback) {
  */
 module.exports.checkEmail = function(email, callback) {
     var sql = "SELECT email FROM user WHERE email=?";
-    connection.query(sql, email, function(err, emailRows, fields) {
+    connection.query(sql, email, function(error, emailRows, fields) {
+      if (error) {
+        console.error('error in fetching email:');
+        console.error(error);
+        callback(false);
+      } else {
         if (emailRows.length === 0) {
             callback(false);
         } else {
             callback(true);
         }
+      }
+
 
     });
+}
+
+
+/*
+ *--------------------------------------------------
+ *Send reset password link
+ *--------------------------------------------------
+ */
+module.exports.sendResetPasswordLink = function(email, verification_token, callback) {
+  var str = "<h2> Welcome to shopping ............ </h2>";
+  str += "<p>You had requested to reset password for your account with email: "+email+".</p>";
+  str += "<p>Get the best services </p>";
+  str += "<p>Please click <a href = 'http://127.0.0.1/Updated/reset-password.php?verification_token=" + verification_token + "'>This Link</a> to verify your account. </p>"
+  str += "<p>Once you verify your account your account will be you will be redirected to password reset page. </p>";
+  str += "</br><strong>Thank You </strong>";
+  var mailOption = {
+      from: 'test mailer <testmailfornode@gmail.com>',
+      to: email,
+      subject: 'Please Reset your account',
+      html: str
+  };
+  var updateVerificationToken = [verification_token, email];
+  var sql_updateVerificationToken = "UPDATE user SET verification_token = ? , verification_status = '2' WHERE email = ?";
+
+  connection.query(sql_updateVerificationToken, updateVerificationToken, function(error, result){
+    if (error) {
+      var errorMsg = "Failed to send reset password link.";
+      sendResponse.sendErrorMessage(errorMsg, res);
+    } else {
+      console.log('token:');
+      console.log(result);
+      transporter.sendMail(mailOption, function(error, info) {
+          if (error) {
+              console.error(error);
+              callback(false);
+          } else {
+              callback(true);
+
+          }
+      });
+    }
+  });
+}
+
+module.exports.updatePassword = function(arrPassword, callback){
+  var sql_updatePassword = "UPDATE user SET password = ?, verification_status = ? WHERE verification_token = ?";
+  console.log(arrPassword);
+  connection.query(sql_updatePassword, arrPassword, function(error, result){
+    if (error) {
+      console.error(error);
+      callback(false);
+    } else {
+      console.log(result);
+      callback(true);
+    }
+  });
 }
 
 
@@ -87,111 +179,50 @@ module.exports.userProfile = function(id, cb) {
 
     var shoppingList = [];
     connection.query(sql_basicUserInfo, id, function(err, userRows, fields) {
-                    if (userRows.length === 0) {
-                        cb(false);
-                    } else {
-                        var basicUserInfo = {
-                            user_id: userRows[0]['user_id'],
-                            username: userRows[0]['username'],
-                            email: userRows[0]['email'],
-                            about_me: userRows[0]['about_me']
+        if (userRows.length === 0) {
+            cb(false);
+        } else {
+            var basicUserInfo = {
+                user_id: userRows[0]['user_id'],
+                username: userRows[0]['username'],
+                email: userRows[0]['email'],
+                about_me: userRows[0]['about_me']
+            };
+            connection.query(sql_profileInfo, id, function(err, listRows, fields) {
+                if (err) {
+                    console.error('profileInfo err: ' + err);
+                } else {
+                    if (listRows.length === 0) {
+                        var nolist = {
+                            order_list: 'No shopping list available for this user.'
                         };
-                        connection.query(sql_profileInfo, id, function(err, listRows, fields) {
-                                       if (err) {
-                                           console.error('profileInfo err: ' + err);
-                                       } else {
-                                           if (listRows.length === 0) {
-                                               var nolist = {
-                                                   order_list: 'No shopping list available for this user.'
-                                               };
-                                               basicUserInfo = {basicUserInfo: basicUserInfo};
-                                               shoppingInfo = {shoppingInfo: nolist};
-                                               var list = [];
-                                               list.push(basicUserInfo);
-                                               list.push(shoppingInfo);
-                                               console.log(JSON.stringify(list));
-                                               cb(list);
-                                           } else {
-                                             basicUserInfo = {basicUserInfo: basicUserInfo};
-                                             shoppingInfo = {shoppingInfo: listRows};
-                                            // callback(basicUserInfo);
-                                             var list = [];
-                                             list.push(basicUserInfo);
-                                             list.push(shoppingInfo);
-                                             console.log(JSON.stringify(list));
-                                             cb(list);
-                                           }
-                                       }
-                                   });
-
+                        basicUserInfo = {
+                            basicUserInfo: basicUserInfo
+                        };
+                        shoppingInfo = {
+                            shoppingInfo: nolist
+                        };
+                        console.log(JSON.stringify(list));
+                        //list = JSON.stringify(list);
+                        cb(list);
+                    } else {
+                        basicUserInfo = {
+                            basicUserInfo: basicUserInfo
+                        };
+                        shoppingInfo = {
+                            shoppingInfo: listRows
+                        };
+                        console.log('rows');
+                        console.log(listRows.length);
+                         var list = { "user_info": basicUserInfo.basicUserInfo, "shoppingInfo": shoppingInfo.shoppingInfo, "test": "trsdd" };
+                        console.log(JSON.stringify(list));
+                        cb(list);
                     }
-                });
+                }
+            });
 
-
-    // async.parallel({
-    //         listInfo: function(callback) {
-    //             var shoppingList = [];
-    //             connection.query(sql_profileInfo, id, function(err, listRows, fields) {
-    //                 if (err) {
-    //                     console.error('profileInfo err: ' + err);
-    //                 } else {
-    //                     if (listRows.length === 0) {
-    //                         var nolist = {
-    //                             order_list: 'No shopping list available for this user.'
-    //                         };
-    //                         callback(nolist);
-    //                     } else {
-    //                       console.log('test');
-    //                       console.log(JSON.stringify(listRows[0]));
-    //                       callback(JSON.stringify(listRows[0]));
-    //                         // async.eachSeries(listRows, function(item, callback1) {
-    //                         //         shoppingList.push(item);
-    //                         //         callback1();
-    //                         //     },
-    //                         //     function(err) {
-    //                         //         if (err) {
-    //                         //             console.log('eachSerieserror:');
-    //                         //             console.error(err);
-    //                         //             callback1(false);
-    //                         //         } else {
-    //                         //             //console.log('shoppingInfo: ');
-    //                         //           //  console.log(JSON.stringify(shoppingList));
-    //                         //             callback(JSON.stringify(shoppingList));
-    //                         //         }
-    //                         //     });
-    //                     }
-    //                 }
-    //             });
-    //         },
-    //         basicInfo: function(callback) {
-    //             connection.query(sql_basicUserInfo, id, function(err, userRows, fields) {
-    //                 if (userRows.length === 0) {
-    //                     callback(false);
-    //                 } else {
-    //                     var basicUserInfo = {
-    //                         user_id: userRows[0]['user_id'],
-    //                         username: userRows[0]['username'],
-    //                         email: userRows[0]['email'],
-    //                         about_me: userRows[0]['about_me']
-    //                     };
-    //                     callback(basicUserInfo);
-    //                 }
-    //             });
-    //         }
-    //     },
-    //     function(err, result) {
-    //         if (err) {
-    //             console.error("err:");
-    //             console.error(err);
-    //             cb(false);
-    //         } else {
-    //             //console.log(result[0][0]);
-    //             //console.log(result[1]);
-    //             console.log('is working');
-    //             cb(result);
-    //         }
-    //     });
-
+        }
+    });
 }
 
 /*
@@ -208,12 +239,13 @@ module.exports.loginUser = function(loginInfo, callback) {
         if (loginRows.length === 1) {
             var data = {
                 user_id: loginRows[0]['user_id'],
-                usermame: loginRows[0]['username'],
+                username: loginRows[0]['username'],
                 email: loginRows[0]['email'],
                 access_token: loginRows[0]['access_token'],
                 about_me: loginRows[0]['about_me'],
                 image_url: loginRows[0]['image_url']
             };
+            console.log('working');
             callback(data)
         } else {
             console.error(err);

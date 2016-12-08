@@ -7,7 +7,9 @@ var randomstring = require('just.randomstring');
 var userModule = require('../models/userModule');
 var md5 = require('md5');
 var multer = require('multer');
-var upload = multer({dest: 'uploads/'});
+var upload = multer({
+    dest: 'uploads/'
+});
 
 
 /*module for secure encryption */
@@ -45,6 +47,7 @@ router.post('/login', function(req, res, next) {
                     sendResponse.sendErrorMessage(errorMsg, res);
 
                 } else {
+                    var successMsg = 'You are successfully Logged in.';
                     sendResponse.sendSuccessData(result, res);
                 }
             });
@@ -70,10 +73,7 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
     var image_url = req.file.filename;
     var about_me = req.body.about_me;
     password = md5(password);
-    var arrFeilds = [username, email, password, image_url, about_me];
-    console.log('array fields :');
-    console.log(arrFeilds);
-    console.log(req.file.filename);
+    var arrFeilds = [username, email, password, image_url];
 
     var access_token;
     var verification_token;
@@ -127,13 +127,12 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
                         access_token = results[1];
                         verification_token = results[2];
                         var sendInputs = [username, email, password, image_url, access_token, verification_token, about_me];
-                        console.error('password:'+password);
                         userModule.registration(sendInputs, function(result) {
                             if (result) {
+                                var account = 'new';
                                 userModule.verify_email(email, verification_token, function(emailstatus) {
                                     if (emailstatus) {
                                         var successMsg = "User registered successfully."
-                                        console.log(successMsg);
                                         sendResponse.successStatusMsg(successMsg, res);
                                     } else {
                                         errorMsg = "It seems email is not valid"
@@ -141,8 +140,6 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
                                     }
                                 });
                             } else {
-                              console.log('Result: ');
-                              console.log(result);
                                 errorMsg = "User Registration Failed!";
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             }
@@ -153,6 +150,155 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
 
 });
 
+
+/*
+ *----------------------------------------------------------------------
+ *This API is to verify the user email
+ *INPUT: verification_token
+  OUTPUT:
+ *----------------------------------------------------------------------
+ */
+
+router.get('/user_verification', function(req, res) {
+    var verification_token = req.query.verification_token;
+    var status = '1';
+    userModule.user_verification(verification_token, status, function(result) {
+        if (result === false) {
+            var errorMsg = "Email verification failed!!!";
+            sendResponse.sendErrorMessage(errorMsg, res);
+        } else {
+            var successMsg = "Email verification Successfull";
+            sendResponse.successStatusMsg(successMsg, res);
+        }
+    });
+
+});
+
+/*
+ *----------------------------------------------------------------------
+ *This API is used to reset password
+ *INPUT: verification_token
+  OUTPUT:
+ *----------------------------------------------------------------------
+ */
+
+router.get('/resetPassword', function(req, res) {
+    var email = req.query.email;
+    console.log("email");
+    console.log(email);
+    userModule.checkEmail(email, function(result) {
+        if (result === false) {
+            var errorMsg = "Invalid Email.";
+            sendResponse.sendErrorMessage(errorMsg, res);
+        } else {
+            var key = email + new Date();
+            async.parallel([
+                    function(callback) {
+                        //Encryption for verification_token
+                        bcrypt.genSalt(passwordRounds, function(err, salt) {
+                            bcrypt.hash(key, salt, function(err, new_token) {
+                                callback(null, new_token);
+                            });
+                        });
+                    }
+                ],
+                function(error, result) {
+                    if (error) {
+                        var errorMsg = 'Error occour during encryption';
+                        send.sendErrorMessage(errorMsg, res);
+                    } else {
+                        var verification_token = result[0];
+                        console.log('token: ');
+                        console.log(verification_token);
+                        userModule.sendResetPasswordLink(email, verification_token, function(result) {
+                            if (result === false) {
+                                var errorMsg = 'Unable to send email for reset password'.
+                                sendResponse.sendErrorMessage(errorMsg, res);
+                            } else {
+
+                                var successMsg = "Reset password link is successfully sent to email address of user.";
+                                sendResponse.successStatusMsg(successMsg, res);
+                            }
+                        });
+                    }
+
+                }
+            );
+        }
+    });
+
+});
+
+/*
+ *----------------------------------------------------------------------
+ *This API is to reset password by user through the email link
+ *INPUT: verification_token
+  OUTPUT:
+ *----------------------------------------------------------------------
+ */
+
+router.get('/reset_passwordLink', function(req, res) {
+    var verification_token = req.query.verification_token;
+    var successData = {
+        verification_token: verification_token
+    };
+    sendResponse.sendSuccessData(successData, res);
+    // var password = req.body.password;
+    // password = md5(password);
+    // var status = '1';
+    // var arrPassword = [password, status, verification_token];
+    // userModule.updatePassword(arrPassword, function(result) {
+    //     if (result === false) {
+    //         var errorMsg = "Email verification failed!!!";
+    //         sendResponse.sendErrorMessage(errorMsg, res);
+    //     } else {
+    //         var successMsg = "Password reset successully.";
+    //         sendResponse.successStatusMsg(successMsg, res);
+    //     }
+    // });
+});
+
+router.post('/updatePassword', function(req, res) {
+    var verification_token = req.body.verification_token;
+    var password = req.body.password;
+    var status = '1';
+    console.log('password: ' + password);
+    password = md5(password);
+    var arrPassword = [password, status, verification_token];
+    userModule.updatePassword(arrPassword, function(result) {
+        if (result === false) {
+            var errorMsg = "Email verification failed!!!";
+            sendResponse.sendErrorMessage(errorMsg, res);
+        } else {
+            var successMsg = "Password reset successully.";
+            sendResponse.successStatusMsg(successMsg, res);
+        }
+    });
+});
+/*
+ *----------------------------------------------------------------------
+ *This API is to post about_me by existing user
+ *INPUT: verification_token
+  OUTPUT:
+ *----------------------------------------------------------------------
+ */
+
+router.post('/about_me', function(req, res) {
+    var user_id = req.body.user_id;
+    var about_me = req.body.about_me;
+    var arrAbout = [about_me, user_id];
+    userModule.about_me(arrAbout, function(result) {
+        if (result === false) {
+            var errorMsg = "Email verification failed!!!";
+            sendResponse.sendErrorMessage(errorMsg, res);
+        } else {
+            var successMsg = "Email verification Successfull";
+            sendResponse.successStatusMsg(successMsg, res);
+        }
+    });
+
+});
+
 /*
  *----------------------------------------------------------------------
  *This API is get user Profile
@@ -160,18 +306,18 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
  OUTPUT: user_id, username, email, about_me, client_review, freelance_review
  *----------------------------------------------------------------------
  */
-router.get('/userprofile', function(req, res){
-  var user_id = req.query.user_id;
-  userModule.userProfile(user_id, function(result){
-    if (result==false) {
-      var errorMsg = "User does not exist!.";
-      console.error(errorMsg);
-      sendResponse.sendErrorMessage(errorMsg, res);
-    }else{
-      console.log('Success: '+result);
-      sendResponse.sendSuccessData(result, res)
-    }
-  });
+router.get('/userprofile', function(req, res) {
+    var user_id = req.query.user_id;
+    userModule.userProfile(user_id, function(result) {
+        if (result == false) {
+            var errorMsg = "User does not exist!.";
+            console.error(errorMsg);
+            sendResponse.sendErrorMessage(errorMsg, res);
+        } else {
+            console.log('Success: ' + result);
+            sendResponse.sendSuccessData(result, res)
+        }
+    });
 });
 
 

@@ -1,13 +1,10 @@
 var connection = require('./dbConnection');
 
-function login(){
-
-}
 
 module.exports.approveUser = function(arrUser, callback){
   var user_id = arrUser[1];
   var statusRequest = 'request';
-  var statusAccept = 'approved'
+  var statusAccept = 'approveds'
   var arrUpdate = [statusAccept, user_id, statusRequest];
 //  var sql_requestUser = "SELECT user_id FROM user WHERE user_id = ? AND status = ?";
   var sql_acceptUser = "UPDATE user SET status = ? WHERE user_id = ? AND status = ? ";

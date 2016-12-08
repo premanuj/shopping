@@ -44,6 +44,50 @@ block content
       input(name="user_id", type="text")
       input(type="submit")
     hr
+  div
+    h2 API: User verification using verification token.
+    description: This api is used to register a new user
+    p api_url: /user/user_verification
+    p method: GET
+    form(action="/user/user_verification", method="get")
+      level
+      input(name="verification_token", type="text")
+      input(type="submit")
+    hr
+  div
+    h2 API: User post about_me.
+    description: This api is used to post about_me
+    p api_url: /user/about_me
+    p method: POST
+    form(action="/user/about_me", method="post")
+      level user_id
+      input(name="user_id", type="text")
+      level about_me
+      input(name="about_me", type="text")
+      input(type="submit")
+    hr
+  div
+    h2 API: User request link for reset password.
+    description: This api is used to send a link to the user for reset their password.
+    p api_url: /user/resetPassword
+    p method: POST
+    form(action="/user/resetPassword", method="get")
+      level email
+      input(name="email", type="text")
+      input(type="submit")
+    hr
+  div
+    h2 API: User update their password.
+    description: This api is used to reset password
+    p api_url: /user/updatePassword
+    p method: POST
+    form(action="/user/updatePassword", method="post")
+      level verification_token
+      input(name="verification_token", type="text")
+      level password
+      input(name="password", type="text")
+      input(type="submit")
+    hr
     div
       h2 API: New Order
       description: This api is used to register a new user
