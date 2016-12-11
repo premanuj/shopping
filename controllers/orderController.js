@@ -15,6 +15,7 @@ var orderModule = require('../models/orderModule');
 
 router.post('/neworder', function(req, res, next) {
     var user_id = req.body.user_id;
+    var list_name = req.body.list_name;
     var items = req.body.items;
     var store = req.body.store;
     var notes = req.body.notes;
@@ -24,7 +25,7 @@ router.post('/neworder', function(req, res, next) {
     var payment_type = req.body.payment_type;
     var estimated_weight = req.body.estimated_weight;
 
-    var arrFields = [items, store, notes, delivery_address, delivery_time_from, delivery_time_to, payment_type, estimated_weight, user_id]
+    var arrFields = [list_name, items, store, notes, delivery_address, delivery_time_from, delivery_time_to, payment_type, estimated_weight, user_id]
     async.waterfall([
             function(callback) {
                 useFunction.checkFeilds(res, arrFields, callback);
@@ -197,6 +198,112 @@ router.post('/deleteOrder', function(req, res, next) {
 
 /*
  *---------------------------------------------------------------------------------------------------
+ *This API is used to view active order of particular user
+ *INPUTS: user_id
+ *OUTPUT: list of active orders
+ *----------------------------------------------------------------------------------------------------
+ */
+
+
+router.get('/activeOrderUser', function(req, res, next) {
+    var user_id = req.query.user_id;
+    var arrOrder = [user_id];
+
+    async.waterfall([
+            function(callback) {
+                useFunction.checkFeilds(res, arrOrder, callback);
+            }
+        ],
+        function(error, result) {
+            if (error) {
+                var errorMsg = "Error occured!!!";
+                sendResponse.sendErrorMessage(errorMsg, res);
+            } else {
+                orderModule.activeOrderUser(arrOrder, function(result) {
+                    if (result === false) {
+                        var errorMsg = 'No active order for this user';
+                        sendResponse.sendErrorMessage(errorMsg, res);
+                    } else {
+                        sendResponse.sendSuccessData(result, res);
+                    }
+                });
+            }
+        });
+});
+
+
+/*
+ *---------------------------------------------------------------------------------------------------
+ *This API is used to view finish order of particular user
+ *INPUTS: user_id
+ *OUTPUT: list of finish orders
+ *----------------------------------------------------------------------------------------------------
+ */
+
+router.get('/finishOrderUser', function(req, res, next) {
+    var user_id = req.query.user_id;
+    var arrOrder = [user_id];
+
+    async.waterfall([
+            function(callback) {
+                useFunction.checkFeilds(res, arrOrder, callback);
+            }
+        ],
+        function(error, result) {
+            if (error) {
+                var errorMsg = "Error occured!!!";
+                sendResponse.sendErrorMessage(errorMsg, res);
+            } else {
+                orderModule.finishOrderUser(arrOrder, function(result) {
+                    if (result === false) {
+                        var errorMsg = 'No finish offer for this user';
+                        sendResponse.sendErrorMessage(errorMsg, res);
+                    } else {
+                        sendResponse.sendSuccessData(result, res);
+                    }
+                });
+            }
+        });
+});
+
+
+/*
+ *---------------------------------------------------------------------------------------------------
+ *This API is used to view in-progress order of particular user
+ *INPUTS: user_id
+ *OUTPUT: list of finish orders
+ *----------------------------------------------------------------------------------------------------
+ */
+
+router.get('/in-progressOrderUser', function(req, res, next) {
+    var user_id = req.query.user_id;
+    var arrOrder = [user_id];
+
+    async.waterfall([
+            function(callback) {
+                useFunction.checkFeilds(res, arrOrder, callback);
+            }
+        ],
+        function(error, result) {
+            if (error) {
+                var errorMsg = "Error occured!!!";
+                sendResponse.sendErrorMessage(errorMsg, res);
+            } else {
+                orderModule.inprogressOrderUser(arrOrder, function(result) {
+                    if (result === false) {
+                        var errorMsg = 'No finish offer for this user';
+                        sendResponse.sendErrorMessage(errorMsg, res);
+                    } else {
+                        sendResponse.sendSuccessData(result, res);
+                    }
+                });
+            }
+        });
+});
+
+
+/*
+ *---------------------------------------------------------------------------------------------------
  *This API is used to deactivate an order status
  *INPUTS: user_id, list_id, status
  *OUTPUT: change active status to
@@ -248,9 +355,6 @@ router.post('/acceptOffer', function(req, res, next) {
     var offer_id = req.body.offer_id;
     var list_id = req.body.list_id;
     var user_id = req.body.user_id;
-    //  var status = req.body.status;
-    // var status = 'accepted';
-    //  var data = new date();
     var arrOrder = [offer_id, list_id, user_id];
     var updateOfferStatus = ["accepted", offer_id, user_id];
     var updateOrderStatus = ['in_progress', list_id, user_id];
@@ -348,10 +452,8 @@ router.post('/clientReview', function(req, res, next) {
     var list_id = req.body.list_id;
     var client_id = req.body.client_id;
     var freelancer_id = req.body.freelancer_id;
-    //  var offer_id = req.body.offer_id;
     var review_by_client = req.body.review_by_client;
     var status = 'finish';
-    //  var offerStatus = 'active';
 
     var arrOrder = [list_id, status];
     var arrReview = [review_by_client, client_id, freelancer_id, list_id];

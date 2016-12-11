@@ -175,7 +175,7 @@ module.exports.updatePassword = function(arrPassword, callback){
 module.exports.userProfile = function(id, cb) {
     id = [id];
     var sql_basicUserInfo = "SELECT * FROM user WHERE user_id=?";
-    var sql_profileInfo = "SELECT sl.user_id, sl.items, sl.status, ol.review from shopping_list as sl INNER JOIN offer_list as ol ON sl.user_id = ol.client_id WHERE ol.client_id = ?  GROUP BY sl.list_id";
+    var sql_profileInfo = "SELECT sl.user_id, sl.list_name, sl.items, sl.status, ol.review from shopping_list as sl INNER JOIN offer_list as ol ON sl.user_id = ol.client_id WHERE ol.client_id = ?  GROUP BY sl.list_id";
 
     var shoppingList = [];
     connection.query(sql_basicUserInfo, id, function(err, userRows, fields) {

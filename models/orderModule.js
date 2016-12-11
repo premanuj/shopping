@@ -3,14 +3,15 @@ var async = require('async');
 var sendResponse = require('../routes/sendResponse');
 
 module.exports.neworder = function(arrOrder, callback) {
-    var sql = "INSERT INTO shopping_list (items, store, notes, delivery_address, delivery_time_from, delivery_time_to, payment_type, estimated_weight, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    var sql = "INSERT INTO shopping_list (list_name, items, store, notes, delivery_address, delivery_time_from, delivery_time_to, payment_type, estimated_weight, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     connection.query(sql, arrOrder, function(err, orderResult) {
         if (err) {
             console.error(err);
             callback(false);
         } else {
           var id = orderResult.insertId;
-          var client_id = arrOrder[8];
+          var client_id = arrOrder[9];
+          console.log(client_id);
           var date = new Date();
           var status = 'open'
           console.log(date);
@@ -58,6 +59,64 @@ module.exports.checkOrderStatus = function(arrToCheckStatus, callback) {
                 callback(false);
             } else {
                 callback(checkStatusRows[0]['status']);
+            }
+        }
+    });
+}
+
+
+module.exports.activeOrderUser = function(arrOrder, callback) {
+    var sql = "SELECT list_id, list_name, items, store, notes FROM shopping_list WHERE user_id = ? AND status= 'active'";
+    connection.query(sql, arrOrder, function(err, resultRows, fields) {
+        if (err) {
+            console.error('Database Error: ');
+            console.error(err);
+            callback(false);
+        } else {
+            if (checkStatusRows.length === 0) {
+                console.error('no rows selected');
+                callback(false);
+            } else {
+                callback(resultRows);
+            }
+        }
+    });
+}
+
+
+module.exports.finishOrderUser = function(arrOrder, callback) {
+    var sql = "SELECT list_id, list_name, items, store, notes FROM shopping_list WHERE user_id = ? AND status= 'finish'";
+    connection.query(sql, arrOrder, function(err, resultRows, fields) {
+        if (err) {
+            console.error('Database Error: ');
+            console.error(err);
+            callback(false);
+        } else {
+            if (checkStatusRows.length === 0) {
+                console.error('no rows selected');
+                callback(false);
+            } else {
+                callback(resultRows);
+            }
+        }
+    });
+}
+
+
+
+module.exports.inprogressOrderUser = function(arrOrder, callback) {
+    var sql = "SELECT list_id, list_name, items, store, notes FROM shopping_list WHERE user_id = ? AND status= 'in_progress'";
+    connection.query(sql, arrOrder, function(err, resultRows, fields) {
+        if (err) {
+            console.error('Database Error: ');
+            console.error(err);
+            callback(false);
+        } else {
+            if (checkStatusRows.length === 0) {
+                console.error('no rows selected');
+                callback(false);
+            } else {
+                callback(resultRows);
             }
         }
     });

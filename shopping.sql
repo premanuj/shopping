@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2016 at 12:39 PM
+-- Generation Time: Dec 11, 2016 at 10:26 AM
 -- Server version: 5.6.16
 -- PHP Version: 5.5.11
 
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `admin` (
 --
 
 INSERT INTO `admin` (`admin_id`, `adminname`, `email`, `password`, `access_token`, `verification_token`, `verification_status`) VALUES
-(0, 'admin', 'admin@admin.com', 'admin', 'admin', 'admin', 'admin');
+(1, 'admin', 'admin@admin.com', '21232f297a57a5a743894a0e4a801fc3', 'admin', 'admin', 'admin');
 
 -- --------------------------------------------------------
 
@@ -64,14 +64,17 @@ CREATE TABLE IF NOT EXISTS `offer_list` (
   `status` enum('open','expired','accepted','paid') NOT NULL DEFAULT 'open',
   `date` datetime NOT NULL,
   PRIMARY KEY (`offer_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=38 ;
 
 --
 -- Dumping data for table `offer_list`
 --
 
 INSERT INTO `offer_list` (`offer_id`, `list_id`, `client_id`, `freelancer_id`, `review`, `status`, `date`) VALUES
-(1, 1, 1, NULL, 'this is review of client with id=1', 'open', '2016-11-23 00:00:00');
+(31, 26, 1, NULL, NULL, 'open', '2016-12-11 11:28:44'),
+(35, 30, 27, NULL, NULL, 'open', '2016-12-11 11:46:50'),
+(36, 30, 27, 13, NULL, 'paid', '0000-00-00 00:00:00'),
+(37, 30, 27, 26, NULL, 'open', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -81,6 +84,7 @@ INSERT INTO `offer_list` (`offer_id`, `list_id`, `client_id`, `freelancer_id`, `
 
 CREATE TABLE IF NOT EXISTS `shopping_list` (
   `list_id` int(11) NOT NULL AUTO_INCREMENT,
+  `list_name` varchar(50) NOT NULL,
   `items` varchar(255) NOT NULL,
   `store` varchar(255) NOT NULL,
   `notes` varchar(255) NOT NULL,
@@ -93,14 +97,18 @@ CREATE TABLE IF NOT EXISTS `shopping_list` (
   `user_id` varchar(255) NOT NULL,
   `status` enum('active','in_progress','finish','deactive') NOT NULL DEFAULT 'active',
   PRIMARY KEY (`list_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=31 ;
 
 --
 -- Dumping data for table `shopping_list`
 --
 
-INSERT INTO `shopping_list` (`list_id`, `items`, `store`, `notes`, `delivery_address`, `delivery_time_from`, `delivery_time_to`, `payment_type`, `estimated_weight`, `rating`, `user_id`, `status`) VALUES
-(1, 'LCD', 'store1', 'i need this item', 'this is my address', '1899-11-30 00:00:00', '2016-11-23 00:00:00', 'cash', '15kg', '2', '1', 'finish');
+INSERT INTO `shopping_list` (`list_id`, `list_name`, `items`, `store`, `notes`, `delivery_address`, `delivery_time_from`, `delivery_time_to`, `payment_type`, `estimated_weight`, `rating`, `user_id`, `status`) VALUES
+(26, 'listname', 'item1 #& item2 #& item3 #& item4', 'item1 #& item2 #& item3 #& item4', 'notes', 'tis is deeivert address', '1899-11-30 00:00:00', '2016-11-23 00:00:00', 'cash', '1kg', '0', '27', 'in_progress'),
+(27, 'listname', 'item1 #& item2 #& item3 #& item4', 'item1 #& item2 #& item3 #& item4', 'notes', 'tis is deeivert address', '1899-11-30 00:00:00', '2016-11-23 00:00:00', 'cash', '1kg', '0', '27', 'finish'),
+(28, 'listname', 'item1 #& item2 #& item3 #& item4', 'item1 #& item2 #& item3 #& item4', 'notes', 'tis is deeivert address', '1899-11-30 00:00:00', '2016-11-23 00:00:00', 'cash', '1kg', '0', '27', 'active'),
+(29, 'listname', 'item1 #& item2 #& item3 #& item4', 'item1 #& item2 #& item3 #& item4', 'notes', 'tis is deeivert address', '1899-11-30 00:00:00', '2016-11-23 00:00:00', 'cash', '1kg', '0', '27', 'active'),
+(30, 'listname', 'item1 #& item2 #& item3 #& item4', 'item1 #& item2 #& item3 #& item4', 'notes', 'tis is deeivert address', '1899-11-30 00:00:00', '2016-11-23 00:00:00', 'cash', '1kg', '0', '27', 'active');
 
 -- --------------------------------------------------------
 
@@ -112,12 +120,12 @@ CREATE TABLE IF NOT EXISTS `user` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `email` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
+  `password` varchar(80) NOT NULL,
   `status` enum('request','verified','approved','') NOT NULL DEFAULT 'request',
   `image_url` varchar(255) NOT NULL,
   `access_token` varchar(100) NOT NULL,
   `verification_token` varchar(100) NOT NULL,
-  `verification_status` enum('0','1') NOT NULL DEFAULT '0',
+  `verification_status` enum('0','1','2') NOT NULL DEFAULT '0',
   `about_me` varchar(255) NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `username` (`username`),
@@ -125,21 +133,16 @@ CREATE TABLE IF NOT EXISTS `user` (
   UNIQUE KEY `access_token` (`access_token`),
   UNIQUE KEY `verification_token` (`verification_token`),
   KEY `verification_status` (`verification_status`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=21 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=28 ;
 
 --
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`user_id`, `username`, `email`, `password`, `status`, `image_url`, `access_token`, `verification_token`, `verification_status`, `about_me`) VALUES
-(1, 'username', 'email', '5f4dcc3b5aa765d61d8327deb882cf99', 'request', 'profile_img', 'fds', 'fds', '', 'dfsgsgs bfdg'),
-(2, 'hjol', 'jo', '079e31e321b4644d505252f0abd6aedd', 'request', 'hojl', '$2a$10$L.DxiwruVuyj9JVkaWkmxejFoEClEQ08/maTid.4.CONb0JVjTs/S', '$2a$10$ECzp8v0600MVKnNyrVNn4Oq5R.eNoSHHosMjRrIm6DSLmma1dW/4S', '', 'hojl'),
-(3, 'nk', 'njk', 'b83e31c14f7f81509f751fba24b71367', 'request', 'nk', '$2a$10$knaZ0WSa01tggPvHjv37o.hpyUEHZybYr3fCtSXsOV7grItD/fCbq', '$2a$10$l0SOHpMgsoHWozLlHY7vG.RRGyKhTPJG1N7SSrkvDvtzKrNayBrr2', '', 'nk'),
-(11, 'jol', 'joljolkjoj', '016c0199d0e92d47d1fe790304fac459', 'request', 'kjmol', '$2a$10$qv9m84DN1bDcZYdorRyFY.7I1TMRY03CWGGuzXcP4fmOFIiJEmCrO', '$2a$10$peuKIHjrxFI2LuM9fNt6EOV7NjezDaAAma/2tznf/PURXQtCX1R.C', '', 'kjmol'),
 (13, 'tamang', 'tamangashish245@gmail.com', '006cc1cd4f3d69d6e780ace2701c60f4', 'request', 'fdag', '$2a$10$nQMfSeTuele2sblOBGssKefPmB72Z7ORjaXSUqwB28ZY7555BGIP.', '$2a$10$iJ1w1qtPDmWTFx.ki1KpHe3lyNnjAxCK6iEMzXpLu2nRT/mWmgwSC', '', 'fae'),
-(14, 'joljhukl', 'jolhikhikj', '2b9f8d99cbf934dd581c8e2ccf8a26bf', 'request', 'jolk', '$2a$10$izz3jd4dameMPyMbmUF/2uzZYqxPNk5WDiX34m/0gmmK4Cd2nod4u', '$2a$10$04OlWdimavBp69ACPpsZDu2D7Ubnnj4ttOzDnlZDXtcHWvbFRbpl6', '0', 'kjmol'),
-(16, 'bnkj', 'fdsnkj', '59e604d06e9b282b882a36fb742faa94', 'request', 'kjnm ', '$2a$10$PFpI3bfuwxlQeEeOMGVmke0Z0PCZx69ojMe..PpI0aYuj.F9d16jK', '$2a$10$HkQDWS1fyXkvRYpMalNIb.gIqhwhIfvE7PxqhhHWgUnQYR70PTdZy', '0', ' kj,mn '),
-(20, 'jiohnkjnoljk', 'mesubedianuj@gmail.com', 'b763cc85153b17d5c7e6f9a91b9e2e8f', 'request', 'mnlk', '$2a$10$/iJEQoguN7/FQYMuB9bbAu0YzWHw1wzC3AEI61uHoPNHPb0ClQbHy', '$2a$10$rWZcPH9.vlCs.Sln4nXwh.sT4NfKdoAgAySrqMFHwxlSxs98dvt8W', '0', 'mlk');
+(26, 'jmkl', 'jkl', 'c7017093ec5da2cb9ad974ffd3d2d1d7', 'request', '8ba7c02ac784f963b8352975a532b2a0', '$2a$10$ESwi3Sj4CDam3hgKjYjKQ.bWyFyMxIZlVubaXfv5Q/Ibjt9WuUFIu', '$2a$10$BIfwKxtexnwGByIMcP4GK.iOKXm8zv3LkaxL4Rq4g9P4SAEqH65sm', '0', 'mlk'),
+(27, 'shiva', 'shivapandey04@gmail.com', '1a1dc91c907325c69271ddf0c944bc72', 'request', 'a80d3d8ecfb5e9d4cf39c9fbe2cc4fd5', '$2a$10$p4QLp4r8Tjfa2zkJWNCByukR7WGLJ7XExUaHeN9JSf2HYkqdG6ZSi', '$2a$10$QKuupliHWlPANHMu6qH0qOuk79/FANZvpCONNQbHrxOBBfrKKzO/y', '1', '');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

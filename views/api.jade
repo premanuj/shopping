@@ -1,239 +1,411 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
-  hr
-  div
-    h2 API: User Login
-    description: This api is used to log in for user
-    p api_url: /login
-    p method: POST
-    form(action="/user/login", method="post")
-      level email
-      input(name="email", type="text")
-      level password
-      input(type="password", name="password")
-      input(type="submit")
-    hr
-  div
-    h2 API: User Registration
-    description: This api is used to register a new user
-    p api_url: /user/registration
-    p method: POST
-    form(action="/user/registration", method="post", enctype="multipart/form-data")
-      level email
-      input(name="email", type="text")
-      level username
-      input(type="text", name="username")
-      level password
-      input(type="password", name="password")
-      level about_me
-      input(type="text", name="about_me")
-      level image_url
-      input(type="file", name="image_url")
-      input(type="submit")
-    hr
-  div
-    h2 API: User profile
-    description: This api is used to register a new user
-    p api_url: /user/userprofile
-    p method: GET
-    form(action="/user/userprofile", method="get")
-      level id
-      input(name="user_id", type="text")
-      input(type="submit")
-    hr
-  div
-    h2 API: User verification using verification token.
-    description: This api is used to register a new user
-    p api_url: /user/user_verification
-    p method: GET
-    form(action="/user/user_verification", method="get")
-      level
-      input(name="verification_token", type="text")
-      input(type="submit")
-    hr
-  div
-    h2 API: User post about_me.
-    description: This api is used to post about_me
-    p api_url: /user/about_me
-    p method: POST
-    form(action="/user/about_me", method="post")
-      level user_id
-      input(name="user_id", type="text")
-      level about_me
-      input(name="about_me", type="text")
-      input(type="submit")
-    hr
-  div
-    h2 API: User request link for reset password.
-    description: This api is used to send a link to the user for reset their password.
-    p api_url: /user/resetPassword
-    p method: POST
-    form(action="/user/resetPassword", method="get")
-      level email
-      input(name="email", type="text")
-      input(type="submit")
-    hr
-  div
-    h2 API: User update their password.
-    description: This api is used to reset password
-    p api_url: /user/updatePassword
-    p method: POST
-    form(action="/user/updatePassword", method="post")
-      level verification_token
-      input(name="verification_token", type="text")
-      level password
-      input(name="password", type="text")
-      input(type="submit")
+    h1= title
+    p Welcome to #{title}
     hr
     div
-      h2 API: New Order
-      description: This api is used to register a new user
-      p api_url: /order/neworder
-      p method: POST
-      form(action="/order/neworder", method="post")
-        level user_id
-        input(name="user_id", type="text")
-        level items:
-        input(name="items", type="text")
-        level store
-        input(name="store", type="text")
-        level notes
-        input(name="notes", type="text")
-        level delivery_address
-        input(name="delivery_address", type="text")
-        level delivery_time_from
-        input(name="delivery_time_from", type="text")
-        level delivery_time_to
-        input(name="delivery_time_to", type="text")
-        level payment_type
-        input(name="payment_type", type="text")
-        level estimated_weight
-        input(name="estimated_weight", type="text")
-        input(type="submit")
-      hr
-      div
-        h2 API: Update Order Status
-        description: This api is used to update the order status by user
-        p api_url: /order/changeOrderStatus
+        h2 API: User Login
+        description: This api is used to log in for user
+        p api_url: /login
+        p method: POST
+        form(action="/user/login", method="post")
+            level email
+            input(name="email", type="text")
+            level password
+            input(type="password", name="password")
+            input(type="submit")
+        hr
+    div
+        h2 API: User Registration
+        description: This api is used to register a new user
+        p api_url: /user/registration
+        p method: POST
+        form(action="/user/registration", method="post", enctype="multipart/form-data")
+            level email
+            input(name="email", type="text")
+            level username
+            input(type="text", name="username")
+            level password
+            input(type="password", name="password")
+            level about_me
+            input(type="text", name="about_me")
+            level image_url
+            input(type="file", name="image_url")
+            input(type="submit")
+        hr
+    div
+        h2 API: User profile
+        description: This api is used to register a new user
+        p api_url: /user/userprofile
         p method: GET
-        form(action="/order/changeOrderStatus", method="post")
-          level user_id
-          input(name="user_id", type="text")
-          level status
-          input(name="status", type="text")
-          level list_id
-          input(name="list_id" type="text")
-          input(type="submit")
+        form(action="/user/userprofile", method="get")
+            level id
+            input(name="user_id", type="text")
+            input(type="submit")
         hr
-      div
-        h2 API: Rate Order
-        description: This api is used to rate the order having status 'finished' by user
-        p api_url: /order/rateOrder
-        p method: POST
-        form(action="/order/rateOrder", method="post")
-          level user_id
-          input(name="user_id", type="text")
-          level rate
-          input(name="rate", type="text")
-          level list_id
-          input(name="list_id" type="text")
-          input(type="submit")
+    div
+        h2 API: User verification using verification token.
+        description: This api is used to register a new user
+        p api_url: /user/user_verification
+        p method: GET
+        form(action="/user/user_verification", method="get")
+            level
+            input(name="verification_token", type="text")
+            input(type="submit")
         hr
-      div
-        h2 API: Delete Order
-        description: This api is used to delete the order having status 'active' or 'deactive' by user. User cannot delete the order if its status either 'in-progress' or 'finished'
-        p api_url: /order/deleteOrder
+    div
+        h2 API: User post about_me.
+        description: This api is used to post about_me
+        p api_url: /user/about_me
         p method: POST
-        form(action="/order/deleteOrder", method="post")
-          level user_id
-          input(name="user_id", type="text")
-          level list_id
-          input(name="list_id" type="text")
-          input(type="submit")
+        form(action="/user/about_me", method="post")
+            level user_id
+            input(name="user_id", type="text")
+            level about_me
+            input(name="about_me", type="text")
+            input(type="submit")
         hr
-      div
-        h2 API: Offer Order
-        description: This api is used to offer an order by the user'
-        p api_url: /order/orderOffer
+    div
+        h2 API: User request link for reset password.
+        description: This api is used to send a link to the user for reset their password.
+        p api_url: /user/resetPassword
         p method: POST
-        form(action="/order/orderOffer", method="post")
-          level client_id
-          input(name="client_id", type="text")
-          level freelancer_id
-          input(name="freelancer_id", type="text")
-          level list_id
-          input(name="list_id" type="text")
-          input(type="submit")
-      div
-        h2 API: Accept Offer Order
-        description: This api is used to accept an offer by the user to wants to hire. After user accept the offer, order status automatically changed to in-progress.
-        p api_url: /order/acceptOffer
-        p method: POST
-        form(action="/order/acceptOffer", method="post")
-          level list_id
-          input(name="list_id", type="text")
-          level user_id
-          input(name="user_id", type="text")
-          level offer_id
-          input(name="offer_id" type="text")
-          input(type="submit")
+        form(action="/user/resetPassword", method="get")
+            level email
+            input(name="email", type="text")
+            input(type="submit")
         hr
-      div
-        h2 API: Review by client
-        description: This api is used to post review by client User who had hired the freelancer.
-        p api_url: /order/clientReview
+    div
+        h2 API: User update their password.
+        description: This api is used to reset password
+        p api_url: /user/updatePassword
         p method: POST
-        form(action="/order/clientReview", method="post")
-          level list_id
-          input(name="list_id", type="text")
-          level client_id
-          input(name="client_id", type="text")
-          level freelancer_id
-          input(name="freelancer_id", type="text")
-          level review_by_client
-          input(name="review_by_client" type="text")
-          input(type="submit")
+        form(action="/user/updatePassword", method="post")
+            level verification_token
+            input(name="verification_token", type="text")
+            level password
+            input(name="password", type="text")
+            input(type="submit")
         hr
-      div
-        h2 API: Review by Freelancer
-        description: This api is used to post review by freelancer User who had been hired by client.
-        p api_url: /order/freelancerReview
-        p method: POST
-        form(action="/order/freelancerReview", method="post")
-          level list_id
-          input(name="list_id", type="text")
-          level client_id
-          input(name="client_id" type="text")
-          level freelancer_id
-          input(name="freelancer_id" type="text")
-          level review_by_client
-          input(name="review_by_client" type="text")
-          input(type="submit")
-        hr
-      div
-        h2 API: Change order status to finish.
-        description: This api is used to post review by freelancer User who had been hired by client.
-        p api_url: /order/finishOrder
-        p method: POST
-        form(action="/order/finishOrder", method="post")
-          level list_id
-          input(name="list_id", type="text")
-          level user_id
-          input(name="user_id" type="text")
-          input(type="submit")
-        hr
-      div
-        h2 API: Approve user by admin.
-        description: This api is used to post review by freelancer User who had been hired by client.
-        p api_url: /admin/approveUser
-        p method: POST
-        form(action="/admin/approveUser", method="post")
-          level admin_id
-          input(name="admin_id", type="text")
-          level user_id
-          input(name="user_id" type="text")
-          input(type="submit")
-        hr
+        div
+            h2 API: New Order
+            description: This api is used to register a new user
+            p api_url: /order/neworder
+            p method: POST
+            form(action="/order/neworder", method="post")
+                level user_id
+                input(name="user_id", type="text")
+                level list_name
+                input(name="list_name", type="text")
+                level items:
+                input(name="items", type="text")
+                level store
+                input(name="store", type="text")
+                level notes
+                input(name="notes", type="text")
+                level delivery_address
+                input(name="delivery_address", type="text")
+                level delivery_time_from
+                input(name="delivery_time_from", type="text")
+                level delivery_time_to
+                input(name="delivery_time_to", type="text")
+                level payment_type
+                input(name="payment_type", type="text")
+                level estimated_weight
+                input(name="estimated_weight", type="text")
+                input(type="submit")
+            hr
+            div
+                h2 API: Update Order Status
+                description: This api is used to update the order status by user
+                p api_url: /order/changeOrderStatus
+                p method: GET
+                form(action="/order/changeOrderStatus", method="post")
+                    level user_id
+                    input(name="user_id", type="text")
+                    level status
+                    input(name="status", type="text")
+                    level list_id
+                    input(name="list_id" type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: Rate Order
+                description: This api is used to rate the order having status 'finished' by user
+                p api_url: /order/rateOrder
+                p method: POST
+                form(action="/order/rateOrder", method="post")
+                    level user_id
+                    input(name="user_id", type="text")
+                    level rate
+                    input(name="rate", type="text")
+                    level list_id
+                    input(name="list_id" type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: Delete Order
+                description: This api is used to delete the order having status 'active' or 'deactive' by user. User cannot delete the order if its status either 'in-progress' or 'finished'
+                p api_url: /order/deleteOrder
+                p method: POST
+                form(action="/order/deleteOrder", method="post")
+                    level user_id
+                    input(name="user_id", type="text")
+                    level list_id
+                    input(name="list_id" type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: Offer Order
+                description: This api is used to offer an order by the freelance-user'
+                p api_url: /order/orderOffer
+                p method: POST
+                form(action="/order/orderOffer", method="post")
+                    level client_id
+                    input(name="client_id", type="text")
+                    level freelancer_id
+                    input(name="freelancer_id", type="text")
+                    level list_id
+                    input(name="list_id" type="text")
+                    input(type="submit")
+            div
+                h2 API: Accept Offer Order
+                description: This api is used to accept an offer by the user to wants to hire(client-user). After user accept the offer, order status automatically changed to in-progress.
+                p api_url: /order/acceptOffer
+                p method: POST
+                form(action="/order/acceptOffer", method="post")
+                    level list_id
+                    input(name="list_id", type="text")
+                    level user_id
+                    input(name="user_id", type="text")
+                    level offer_id
+                    input(name="offer_id" type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: Review by client
+                description: This api is used to post review by client User who had hired the freelancer.
+                p api_url: /order/clientReview
+                p method: POST
+                form(action="/order/clientReview", method="post")
+                    level list_id
+                    input(name="list_id", type="text")
+                    level client_id
+                    input(name="client_id", type="text")
+                    level freelancer_id
+                    input(name="freelancer_id", type="text")
+                    level review_by_client
+                    input(name="review_by_client" type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: Review by Freelancer
+                description: This api is used to post review by freelancer User who had been hired by client.
+                p api_url: /order/freelancerReview
+                p method: POST
+                form(action="/order/freelancerReview", method="post")
+                    level list_id
+                    input(name="list_id", type="text")
+                    level client_id
+                    input(name="client_id" type="text")
+                    level freelancer_id
+                    input(name="freelancer_id" type="text")
+                    level review_by_client
+                    input(name="review_by_client" type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: Change order status to finish.
+                description: This api is used to post review by freelancer User who had been hired by client.
+                p api_url: /order/finishOrder
+                p method: POST
+                form(action="/order/finishOrder", method="post")
+                    level list_id
+                    input(name="list_id", type="text")
+                    level user_id
+                    input(name="user_id" type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View Active order by client-user.
+                description: This api is used to view all the active order by a particular client.
+                p api_url: /order/activeOrderUser
+                p method: GET
+                form(action="/order/activeOrderUser", method="get")
+                    level user_id
+                    input(name="user_id" type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View Finish order by client-user.
+                description: This api is used to view all the active order by a particular client.
+                p api_url: /order/finishOrderUser
+                p method: GET
+                form(action="/order/finishOrderUser", method="get")
+                    level user_id
+                    input(name="user_id" type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: Approve user by admin.
+                description: This api is used to post review by freelancer User who had been hired by client.
+                p api_url: /admin/approveUser
+                p method: POST
+                form(action="/admin/approveUser", method="post")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    level user_id
+                    input(name="user_id" type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View list of users by admin.
+                description: This api is used to View all the users
+                p api_url: /admin/viewUsers
+                p method: GET
+                form(action="/admin/viewUsers", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: Delete User by admin.
+                description: This api is used to delete users by the admin
+                p api_url: /admin/deleteUser
+                p method: GET
+                form(action="/admin/deleteUser", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    level user_id
+                    input(name="user_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View order of specific user.
+                description: This api is used by admin to view all the order posted by specific user
+                p api_url: /admin/viewSpecificUserOrder
+                p method: GET
+                form(action="/admin/viewSpecificUserOrder", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    level user_id
+                    input(name="user_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View all offers made by freelencer.
+                description: This api is used by admin to view all the offer posted by freelancer-user on particular order
+                p api_url: /admin/offersByUser
+                p method: GET
+                form(action="/admin/offersByUser", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    level freelancer_id
+                    input(name="user_id", type="text")
+                    level list_id
+                    input(name="list_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View all accepted offers of particular freelancer from all order he offers.
+                description: This api is used by admin to view all the accepted offer of freelancer-user that was accepted by client-user.
+                p api_url: /admin/acceptedOffersByUser
+                p method: GET
+                form(action="/admin/acceptedOffersByUser", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    level freelancer_id
+                    input(name="user_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View all paid offers of particular freelancer from all order he offers.
+                description: This api is used by admin to view all the paid offer of freelancer-user that was accepted by client-user.
+                p api_url: /admin/paidOffersByFreelancer
+                p method: GET
+                form(action="/admin/paidOffersByFreelancer", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    level freelancer_id
+                    input(name="user_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View all paid offers of particular user.
+                description: This api is used by admin to view all the paid offer of client-user.
+                p api_url: /admin/paidOffersByUser
+                p method: GET
+                form(action="/admin/paidOffersByUser", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    level user_id
+                    input(name="user_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View all active order by admin.
+                description: This api is used by admin to view all the active order.
+                p api_url: /admin/viewActiveOrder
+                p method: GET
+                form(action="/admin/viewActiveOrder", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View all in-progress order by admin.
+                description: This api is used by admin to view all the active order.
+                p api_url: /admin/viewInProgressOrder
+                p method: GET
+                form(action="/admin/viewInProgressOrder", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View all finish order by admin.
+                description: This api is used by admin to view all the finish order.
+                p api_url: /admin/viewFinishOrder
+                p method: GET
+                form(action="/admin/viewFinishOrder", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View all active order of particular user by admin.
+                description: This api is used by admin to view all the active order of particular user.
+                p api_url: /admin/viewActiveOrderByUser
+                p method: GET
+                form(action="/admin/viewActiveOrderByUser", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    level user_id
+                    input(name="user_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View all finish order of particular user by admin.
+                description: This api is used by admin to view all the finish order of particular user.
+                p api_url: /admin/viewFinishOrderByUser
+                p method: GET
+                form(action="/admin/viewFinishOrderByUser", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    level user_id
+                    input(name="user_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View all in-progress order of particular user by admin.
+                description: This api is used by admin to view all the in-progress order of particular user.
+                p api_url: /admin/viewInProgressOrderByUser
+                p method: GET
+                form(action="/admin/viewInProgressOrderByUser", method="get")
+                    level admin_id
+                    input(name="admin_id", type="text")
+                    level user_id
+                    input(name="user_id", type="text")
+                    input(type="submit")
+                hr
