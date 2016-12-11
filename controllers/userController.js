@@ -14,7 +14,7 @@ var upload = multer({
 
 /*module for secure encryption */
 
-var bcrypt = require('bcrypt');
+var bcrypt = require('bcrypt-nodejs');
 const passwordRounds = 10;
 const tokenRounds = 32;
 const verificationRounds = 64;
@@ -76,7 +76,7 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
     var arrFeilds = [username, email, password, image_url];
 
     var access_token;
-    var verification_token;
+    var verification_token = email+password;
     var verification_status
     async.waterfall([
             function(callback) {
@@ -94,7 +94,35 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
                 var errorMsg = 'Error occour. Please Register again!';
                 sendResponse.sendErrorMessage(errorMsg, res);
             } else {
+              console.log('working');
                 async.parallel([
+                        // /*
+                        //  *-----------------------------------------------------------------
+                        //  *Code for encryption of password, access_token, verification_token
+                        //  *Applied For: password, access_token, verification_token
+                        //  */
+                        // function(callback) {
+                        //     //Encryption for password
+                        //     callback(null, password);
+                        //
+                        // },
+                        // function(callback) {
+                        //     //Encryption for access_token
+                        //     bcrypt.genSalt(passwordRounds, function(err, salt) {
+                        //         bcrypt.hash(myPlaintextPassword, salt, function(err, access_token) {
+                        //             callback(null, access_token);
+                        //         });
+                        //     });
+                        // },
+                        // function(callback) {
+                        //     //Encryption for verification_token
+                        //     bcrypt.genSalt(passwordRounds, function(err, salt) {
+                        //         bcrypt.hash(myPlaintextPassword, salt, function(err, verification_token) {
+                        //             callback(null, verification_token);
+                        //         });
+                        //     });
+                        // }
+
                         /*
                          *-----------------------------------------------------------------
                          *Code for encryption of password, access_token, verification_token
@@ -107,22 +135,35 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
                         },
                         function(callback) {
                             //Encryption for access_token
-                            bcrypt.genSalt(passwordRounds, function(err, salt) {
-                                bcrypt.hash(myPlaintextPassword, salt, function(err, access_token) {
-                                    callback(null, access_token);
-                                });
+                            bcrypt.hash(email, null, null, function(err, hash) {
+                              if (err) {
+                                console.error('access_token error');
+                              } else {
+                                callback(null, hash);
+                              }
+
                             });
                         },
                         function(callback) {
                             //Encryption for verification_token
-                            bcrypt.genSalt(passwordRounds, function(err, salt) {
-                                bcrypt.hash(myPlaintextPassword, salt, function(err, verification_token) {
-                                    callback(null, verification_token);
-                                });
+                            bcrypt.hash(verification_token, null, null, function(err, hash) {
+                              if (err) {
+                                console.log("ERROR ERror ERror Error");
+                              } else {
+                                console.log("SDLFJSDLFJSDLFJSDLFJSDLFJSL");
+                                callback(null, hash);
+                              }
+
                             });
                         }
                     ],
-                    function(err, results) {
+                    function(error, results) {
+                      console.log(results);
+                      if (error) {
+                        console.error('error found:');
+                        console.error(error);
+                        console.log("Error Error");
+                      } else {
                         password = results[0];
                         access_token = results[1];
                         verification_token = results[2];
@@ -144,6 +185,8 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             }
                         });
+                      }
+
                     });
             }
         });
@@ -195,10 +238,8 @@ router.get('/resetPassword', function(req, res) {
             async.parallel([
                     function(callback) {
                         //Encryption for verification_token
-                        bcrypt.genSalt(passwordRounds, function(err, salt) {
-                            bcrypt.hash(key, salt, function(err, new_token) {
-                                callback(null, new_token);
-                            });
+                        bcrypt.hash(email, null, null, function(err, hash) {
+                            callback(hash);
                         });
                     }
                 ],
