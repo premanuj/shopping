@@ -353,6 +353,7 @@ router.get('/userprofile', function(req, res) {
             sendResponse.sendErrorMessage(errorMsg, res);
         } else {
             console.log('Success: ' + result);
+            console.log(result);
             sendResponse.sendSuccessData(result, res)
         }
     });

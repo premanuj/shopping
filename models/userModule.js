@@ -175,7 +175,7 @@ module.exports.updatePassword = function(arrPassword, callback){
 module.exports.userProfile = function(id, cb) {
     id = [id];
     var sql_basicUserInfo = "SELECT * FROM user WHERE user_id=?";
-    var sql_profileInfo = "SELECT sl.user_id, sl.list_name, sl.items, sl.status, ol.review from shopping_list as sl INNER JOIN offer_list as ol ON sl.user_id = ol.client_id WHERE ol.client_id = ?  GROUP BY sl.list_id";
+    var sql_profileInfo = "SELECT sl.user_id, sl.list_name, sl.items, sl.status, ol.review FROM shopping_list as sl INNER JOIN offer_list as ol ON sl.user_id = ol.client_id WHERE sl.user_id = ?  GROUP BY sl.list_id";
 
     var shoppingList = [];
     connection.query(sql_basicUserInfo, id, function(err, userRows, fields) {
@@ -199,11 +199,7 @@ module.exports.userProfile = function(id, cb) {
                         basicUserInfo = {
                             basicUserInfo: basicUserInfo
                         };
-                        shoppingInfo = {
-                            shoppingInfo: nolist
-                        };
-                        console.log(JSON.stringify(list));
-                        //list = JSON.stringify(list);
+                        var list = { "user_info": basicUserInfo.basicUserInfo, "shoppingInfo": nolist };
                         cb(list);
                     } else {
                         basicUserInfo = {
@@ -214,8 +210,7 @@ module.exports.userProfile = function(id, cb) {
                         };
                         console.log('rows');
                         console.log(listRows.length);
-                         var list = { "user_info": basicUserInfo.basicUserInfo, "shoppingInfo": shoppingInfo.shoppingInfo, "test": "trsdd" };
-                        console.log(JSON.stringify(list));
+                         var list = { "user_info": basicUserInfo.basicUserInfo, "shoppingInfo": shoppingInfo.shoppingInfo };
                         cb(list);
                     }
                 }
