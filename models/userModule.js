@@ -37,6 +37,7 @@ module.exports.verify_email = function(email, verification_token, callback) {
             console.error(error);
             callback(false);
         } else {
+          console.log();
             callback(true);
 
         }
@@ -175,45 +176,65 @@ module.exports.updatePassword = function(arrPassword, callback){
 module.exports.userProfile = function(id, cb) {
     id = [id];
     var sql_basicUserInfo = "SELECT * FROM user WHERE user_id=?";
-  //  var sql_profileInfo = "SELECT sl.user_id, sl.list_name, sl.items, sl.status, ol.review FROM shopping_list as sl INNER JOIN offer_list as ol ON sl.user_id = ol.client_id WHERE sl.user_id = ? GROUP BY sl.list_id";
-    var sql_profileInfo = "SELECT sl.user_id, sl.list_name, sl.items, sl.status, ol.review FROM shopping_list as sl INNER JOIN offer_list as ol ON sl.user_id = ol.client_id WHERE sl.user_id = ?";
-
+    //var sql_profileInfo = "SELECT sl.user_id, sl.list_name, sl.items, sl.status, ol.review FROM shopping_list as sl INNER JOIN offer_list as ol ON sl.user_id = ol.client_id WHERE sl.user_id = ?";
+      var sql_profileInfo = "SELECT user_id, list_name, items, status FROM shopping_list WHERE user_id = ?";
+      var sql_profileOffer = "SELECT review FROM offer_list WHERE freelancer_id = ? AND freelancer_id IS NOT NULL";
     var shoppingList = [];
     connection.query(sql_basicUserInfo, id, function(err, userRows, fields) {
         if (userRows.length === 0) {
             cb(false);
         } else {
+          var list = [];
             var basicUserInfo = {
                 user_id: userRows[0]['user_id'],
                 username: userRows[0]['username'],
                 email: userRows[0]['email'],
                 about_me: userRows[0]['about_me']
             };
-            connection.query(sql_profileInfo, id, function(err, listRows, fields) {
+            basicUserInfo = {"basicUserInfo": basicUserInfo}
+            list.push(basicUserInfo);
+            connection.query(sql_profileInfo, id, function(err, shoppingRows, fields) {
                 if (err) {
                     console.error('profileInfo err: ' + err);
+                    cb(false);
                 } else {
-                    if (listRows.length === 0) {
-                        var nolist = {
-                            order_list: 'No shopping list available for this user.'
-                        };
-                        basicUserInfo = {
-                            basicUserInfo: basicUserInfo
-                        };
-                        var list = { "user_info": basicUserInfo.basicUserInfo, "shoppingInfo": nolist };
-                        cb(list);
+                //  console.log(shoppingRows[0]);
+                  var shoppingUserInfo = {"shoppingUserInfo":shoppingRows};
+                  console.log(shoppingUserInfo);
+                  list.push(shoppingUserInfo);
+
+                  connection.query(sql_profileOffer, id, function(error, offerRows, fields){
+                    if (error) {
+                      cb(false)
                     } else {
-                        basicUserInfo = {
-                            basicUserInfo: basicUserInfo
-                        };
-                        shoppingInfo = {
-                            shoppingInfo: listRows
-                        };
-                        console.log('rows');
-                        console.log(listRows.length);
-                         var list = { "user_info": basicUserInfo.basicUserInfo, "shoppingInfo": shoppingInfo.shoppingInfo };
-                        cb(list);
+                      var offerUserInfo = {"offerRows":offerRows};
+                      list.push(offerUserInfo.offerRows);
+                      console.log(list);
+                      //var list = {"user_info": basicUserInfo, "shoppingInfo": shoppingUserInfo[0], "offer_info": offerUserInfo};
+                      cb(list);
                     }
+                  });
+                    // if (listRows.length === 0) {
+                    //     var nolist = {
+                    //         order_list: 'No shopping list available for this user.'
+                    //     };
+                    //     basicUserInfo = {
+                    //         basicUserInfo: basicUserInfo
+                    //     };
+                    //     var list = { "user_info": basicUserInfo.basicUserInfo, "shoppingInfo": nolist };
+                    //     cb(list);
+                    // } else {
+                    //     basicUserInfo = {
+                    //         basicUserInfo: basicUserInfo
+                    //     };
+                    //     shoppingInfo = {
+                    //         shoppingInfo: listRows
+                    //     };
+                    //     console.log('rows');
+                    //     console.log(listRows.length);
+                    //      var list = { "user_info": basicUserInfo.basicUserInfo, "shoppingInfo": shoppingInfo.shoppingInfo };
+                    //     cb(list);
+                    // }
                 }
             });
 

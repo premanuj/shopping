@@ -82,7 +82,7 @@ async.waterfall([
           sendResponse.sendErrorMessage(errorMsg, res);
         }else {
           var successMsg = "Status change to "+ status + "successfully!";
-          sendResponse.successStatusMsg(getResult, res);
+          sendResponse.successStatusMsg(successMsg, res);
         }
       });
     }

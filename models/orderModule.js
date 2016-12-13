@@ -152,33 +152,6 @@ module.exports.deleteOrder = function(arrFields, callback) {
     });
 }
 
-// module.exports.expireOfferStatus = function('', callback) {
-//     var updateStaus = ['expire'];
-//     var selectStatus = ['open'];
-//
-//     var sql_offerDate = "SELECT date FROM offer_list WHERE staus= ?";
-//
-//
-//     connection.query(sql_offerDate, selectStatus, function(error, selectDateRows, fields) {
-//         if (error) {
-//             callback(false);
-//         } else {
-//             if (selectDateRows.length === 0) {
-//                 console.error('no rows selected!');
-//                 callback(false);
-//             } else {
-//                 var sql_offerStatusUpdate = 'UPDATE offer_list SET status = ?';
-//                 async.eachSeries(selectDateRows, function(eachDate, callbackStatus) {
-//                   if (eachDate) {
-//
-//                   }
-//                   //  connection.query(sql_offerStatusUpdate, eachDate);
-//                 });
-//             }
-//         }
-//     });
-//
-// }
 
 module.exports.orderOffer = function(arrOrder, callback) {
     var sql = "INSERT INTO offer_list (list_id, client_id, freelancer_id) VALUES (?, ?, ?)";

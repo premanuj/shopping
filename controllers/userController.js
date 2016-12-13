@@ -72,11 +72,11 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
     var username = req.body.username;
     var image_url = req.file.filename;
     var about_me = req.body.about_me;
-    image_url = "image_url/"+image_url;
+    image_url = "image_url/" + image_url;
     password = md5(password);
     var arrFeilds = [username, email, password, image_url];
     var access_token;
-    var verification_token = email+password;
+    var verification_token = email + password;
     var verification_status
     async.waterfall([
             function(callback) {
@@ -91,7 +91,7 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
                 var errorMsg = 'Error occour. Please Register again!';
                 sendResponse.sendErrorMessage(errorMsg, res);
             } else {
-              console.log('working');
+                console.log('working');
                 async.parallel([
                         // /*
                         //  *-----------------------------------------------------------------
@@ -133,56 +133,56 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
                         function(callback) {
                             //Encryption for access_token
                             bcrypt.hash(email, null, null, function(err, hash) {
-                              if (err) {
-                                console.error('access_token error');
-                              } else {
-                                callback(null, hash);
-                              }
+                                if (err) {
+                                    console.error('access_token error');
+                                } else {
+                                    callback(null, hash);
+                                }
 
                             });
                         },
                         function(callback) {
                             //Encryption for verification_token
                             bcrypt.hash(verification_token, null, null, function(err, hash) {
-                              if (err) {
-                                console.log("ERROR ERror ERror Error");
-                              } else {
-                                console.log("SDLFJSDLFJSDLFJSDLFJSDLFJSL");
-                                callback(null, hash);
-                              }
+                                if (err) {
+                                    console.log("ERROR ERror ERror Error");
+                                } else {
+                                    console.log("SDLFJSDLFJSDLFJSDLFJSDLFJSL");
+                                    callback(null, hash);
+                                }
 
                             });
                         }
                     ],
                     function(error, results) {
-                      console.log(results);
-                      if (error) {
-                        console.error('error found:');
-                        console.error(error);
-                        console.log("Error Error");
-                      } else {
-                        password = results[0];
-                        access_token = results[1];
-                        verification_token = results[2];
-                        var sendInputs = [username, email, password, image_url, access_token, verification_token, about_me];
-                        userModule.registration(sendInputs, function(result) {
-                            if (result) {
-                                var account = 'new';
-                                userModule.verify_email(email, verification_token, function(emailstatus) {
-                                    if (emailstatus) {
-                                        var successMsg = "User registered successfully."
-                                        sendResponse.successStatusMsg(successMsg, res);
-                                    } else {
-                                        errorMsg = "It seems email is not valid"
-                                        sendResponse.sendErrorMessage(errorMsg, res);
-                                    }
-                                });
-                            } else {
-                                errorMsg = "User Registration Failed!";
-                                sendResponse.sendErrorMessage(errorMsg, res);
-                            }
-                        });
-                      }
+                        console.log(results);
+                        if (error) {
+                            console.error(error);
+                            var errorMsg = "Error in encrypttion.";
+                            sendResponse.sendErrorMessage(errorMsg, res);
+                        } else {
+                            password = results[0];
+                            access_token = results[1];
+                            verification_token = results[2];
+                            var sendInputs = [username, email, password, image_url, access_token, verification_token, about_me];
+                            userModule.verify_email(email, verification_token, function(emailstatus) {
+                                if (emailstatus) {
+                                    userModule.registration(sendInputs, function(result) {
+                                        if (result) {
+                                            var successMsg = "User registered successfully."
+                                            sendResponse.successStatusMsg(successMsg, res);
+                                        } else {
+                                            errorMsg = "User Registration Failed!";
+                                            sendResponse.sendErrorMessage(errorMsg, res);
+                                        }
+                                    }); // module user Registration
+                                } else {
+                                    errorMsg = "It seems email is not valid"
+                                    sendResponse.sendErrorMessage(errorMsg, res);
+                                }
+                            });
+
+                        }
 
                     });
             }

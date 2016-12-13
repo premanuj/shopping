@@ -81,8 +81,8 @@ router.post('/changeOrderStatus', function(req, res, next) {
                         var errorMsg = "Error Encoured!";
                         sendResponse.sendErrorMessage(errorMsg, res);
                     } else {
-                        var successMsg = "Status change to " + status + "successfully!";
-                        sendResponse.successStatusMsg(getResult, res);
+                        var successMsg = "Status change to " + status + " successfully!";
+                        sendResponse.successStatusMsg(successMsg, res);
                     }
                 });
             }

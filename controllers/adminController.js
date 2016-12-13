@@ -45,7 +45,6 @@ router.post('/approveUser', function(req, res, next) {
     var admin_id = req.body.admin_id;
     var user_id = req.body.user_id;
 
-
     var arrfields = [admin_id, user_id];
     async.waterfall([
             function(callback) {
@@ -65,7 +64,7 @@ router.post('/approveUser', function(req, res, next) {
                     } else {
                         adminModule.approveUser(arrfields, function(result) {
                             if (result == false) {
-                                var errorMsg = "This user cannot be approved.";
+                                var errorMsg = "This user did not verifiy email.";
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             } else {
                                 var successMsg = "User approved successfully.";
@@ -74,8 +73,6 @@ router.post('/approveUser', function(req, res, next) {
                         });
                     }
                 });
-
-
             }
         });
 });
@@ -218,7 +215,7 @@ router.get('/offersByUser', function(req, res, next) {
 router.get('/acceptedOffersByUser', function(req, res, next) {
     var admin_id = req.query.admin_id;
     var freelancer_id = req.query.user_id;
-  //  var list_id = req.query.list_id;
+    //  var list_id = req.query.list_id;
     var arrAdmin = [admin_id, freelancer_id];
     var arrUser = [freelancer_id];
     async.waterfall([
@@ -261,7 +258,7 @@ router.get('/acceptedOffersByUser', function(req, res, next) {
 router.get('/paidOffersByFreelancer', function(req, res, next) {
     var admin_id = req.query.admin_id;
     var freelancer_id = req.query.user_id;
-  //  var list_id = req.query.list_id;
+    //  var list_id = req.query.list_id;
     var arrAdmin = [admin_id, freelancer_id];
     var arrUser = [freelancer_id];
     async.waterfall([
@@ -284,7 +281,7 @@ router.get('/paidOffersByFreelancer', function(req, res, next) {
                                 var errorMsg = "No list available tor this user";
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             } else {
-                              console.log(result);
+                                console.log(result);
                                 sendResponse.sendSuccessData(result, res);
                             }
                         });
@@ -305,8 +302,8 @@ router.get('/paidOffersByFreelancer', function(req, res, next) {
  */
 router.get('/viewActiveOrder', function(req, res, next) {
     var admin_id = req.query.admin_id;
-  //  var freelancer_id = req.query.user_id;
-  //  var list_id = req.query.list_id;
+    //  var freelancer_id = req.query.user_id;
+    //  var list_id = req.query.list_id;
     var arrAdmin = [admin_id];
     //var arrUser = [freelancer_id];
     async.waterfall([
@@ -329,7 +326,7 @@ router.get('/viewActiveOrder', function(req, res, next) {
                                 var errorMsg = "No list available tor this user";
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             } else {
-                              console.log(result);
+                                console.log(result);
                                 sendResponse.sendSuccessData(result, res);
                             }
                         });
@@ -349,8 +346,8 @@ router.get('/viewActiveOrder', function(req, res, next) {
  */
 router.get('/viewInProgressOrder', function(req, res, next) {
     var admin_id = req.query.admin_id;
-  //  var freelancer_id = req.query.user_id;
-  //  var list_id = req.query.list_id;
+    //  var freelancer_id = req.query.user_id;
+    //  var list_id = req.query.list_id;
     var arrAdmin = [admin_id];
     //var arrUser = [freelancer_id];
     async.waterfall([
@@ -373,7 +370,7 @@ router.get('/viewInProgressOrder', function(req, res, next) {
                                 var errorMsg = "No list available tor this user";
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             } else {
-                              console.log(result);
+                                console.log(result);
                                 sendResponse.sendSuccessData(result, res);
                             }
                         });
@@ -393,8 +390,8 @@ router.get('/viewInProgressOrder', function(req, res, next) {
  */
 router.get('/viewFinishOrder', function(req, res, next) {
     var admin_id = req.query.admin_id;
-  //  var freelancer_id = req.query.user_id;
-  //  var list_id = req.query.list_id;
+    //  var freelancer_id = req.query.user_id;
+    //  var list_id = req.query.list_id;
     var arrAdmin = [admin_id];
     //var arrUser = [freelancer_id];
     async.waterfall([
@@ -417,7 +414,7 @@ router.get('/viewFinishOrder', function(req, res, next) {
                                 var errorMsg = "No list available tor this user";
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             } else {
-                              console.log(result);
+                                console.log(result);
                                 sendResponse.sendSuccessData(result, res);
                             }
                         });
@@ -438,8 +435,8 @@ router.get('/viewFinishOrder', function(req, res, next) {
  */
 router.get('/viewActiveOrderByUser', function(req, res, next) {
     var admin_id = req.query.admin_id;
-   var user_id = req.query.user_id;
-  //  var list_id = req.query.list_id;
+    var user_id = req.query.user_id;
+    //  var list_id = req.query.list_id;
     var arrAdmin = [admin_id, user_id];
     var arrUser = [user_id];
     async.waterfall([
@@ -462,7 +459,7 @@ router.get('/viewActiveOrderByUser', function(req, res, next) {
                                 var errorMsg = "No list available tor this user";
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             } else {
-                              console.log(result);
+                                console.log(result);
                                 sendResponse.sendSuccessData(result, res);
                             }
                         });
@@ -483,8 +480,8 @@ router.get('/viewActiveOrderByUser', function(req, res, next) {
  */
 router.get('/viewFinishOrderByUser', function(req, res, next) {
     var admin_id = req.query.admin_id;
-   var user_id = req.query.user_id;
-  //  var list_id = req.query.list_id;
+    var user_id = req.query.user_id;
+    //  var list_id = req.query.list_id;
     var arrAdmin = [admin_id, user_id];
     var arrUser = [user_id];
     async.waterfall([
@@ -507,7 +504,7 @@ router.get('/viewFinishOrderByUser', function(req, res, next) {
                                 var errorMsg = "No list available tor this user";
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             } else {
-                              console.log(result);
+                                console.log(result);
                                 sendResponse.sendSuccessData(result, res);
                             }
                         });
@@ -528,8 +525,8 @@ router.get('/viewFinishOrderByUser', function(req, res, next) {
  */
 router.get('/viewInProgressOrderByUser', function(req, res, next) {
     var admin_id = req.query.admin_id;
-   var user_id = req.query.user_id;
-  //  var list_id = req.query.list_id;
+    var user_id = req.query.user_id;
+    //  var list_id = req.query.list_id;
     var arrAdmin = [admin_id, user_id];
     var arrUser = [user_id];
     async.waterfall([
@@ -552,7 +549,7 @@ router.get('/viewInProgressOrderByUser', function(req, res, next) {
                                 var errorMsg = "No list available tor this user";
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             } else {
-                              console.log(result);
+                                console.log(result);
                                 sendResponse.sendSuccessData(result, res);
                             }
                         });
@@ -573,7 +570,7 @@ router.get('/viewInProgressOrderByUser', function(req, res, next) {
 router.get('/paidOffersByUser', function(req, res, next) {
     var admin_id = req.query.admin_id;
     var freelancer_id = req.query.user_id;
-  //  var list_id = req.query.list_id;
+    //  var list_id = req.query.list_id;
     var arrAdmin = [admin_id, freelancer_id];
     var arrUser = [freelancer_id];
     async.waterfall([
@@ -596,7 +593,7 @@ router.get('/paidOffersByUser', function(req, res, next) {
                                 var errorMsg = "No list available tor this user";
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             } else {
-                              console.log(result);
+                                console.log(result);
                                 sendResponse.sendSuccessData(result, res);
                             }
                         });
@@ -644,6 +641,7 @@ router.get('/deleteUser', function(req, res, next) {
                                 console.error(errorMsg);
                                 sendResponse.sendErrorMessage(errorMsg, res);
                             } else {
+
                                 var successMsg = "User and its related records deleted successfuly."
                                 sendResponse.successStatusMsg(successMsg, res);
                             }
