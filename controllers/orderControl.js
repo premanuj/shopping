@@ -143,7 +143,7 @@ router.post('/rateOrder', function(req, res, next){
 
 /*
 *---------------------------------------------------------------------------------------------------
-*This API is used to deactivate an order status
+*This API is used  delete order
 *INPUTS: user_id, list_id, status
 *OUTPUT: change active status to
 *----------------------------------------------------------------------------------------------------

@@ -77,7 +77,7 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
     var arrFeilds = [username, email, password, image_url];
     var access_token;
     var verification_token = email + password;
-    var verification_status
+    var verification_status;
     async.waterfall([
             function(callback) {
                 useFunction.checkFeilds(res, arrFeilds, callback);
