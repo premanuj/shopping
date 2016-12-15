@@ -14,11 +14,7 @@ module.exports.registration = function(arrUser, callback) {
 }
 
 module.exports.verify_email = function(email, verification_token, callback) {
-  // if (account==='new') {
-  //   account='user_verification';
-  // }else {
-  //   account = 'reset_passwordLink';
-  // }
+  
     var str = "<h2> Welcome to shopping ............ </h2>";
     str += "<p>Congratulation, You have created your account successfully.</p>";
     str += "<p>Get the best services </p>";

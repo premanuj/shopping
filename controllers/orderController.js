@@ -352,16 +352,16 @@ router.post('/orderOffer', function(req, res, next) {
 
 
 router.post('/acceptOffer', function(req, res, next) {
-    var offer_id = req.body.offer_id;
     var list_id = req.body.list_id;
-    var user_id = req.body.user_id;
-    var arrOrder = [offer_id, list_id, user_id];
-    var updateOfferStatus = ["accepted", offer_id, user_id];
+    var freelancer_id = req.body.freelancer_id;
+    var user_id = req.body.client_id;
+  //  var arrOrder = [offer_id, list_id, user_id];
+    var updateOfferStatus = [freelancer_id, list_id];
     var updateOrderStatus = ['in_progress', list_id, user_id];
 
     async.waterfall([
             function(callback) {
-                useFunction.checkFeilds(res, arrOrder, callback);
+                useFunction.checkFeilds(res, updateOfferStatus, callback);
             }
         ],
         function(error, result) {
@@ -371,10 +371,10 @@ router.post('/acceptOffer', function(req, res, next) {
             } else {
 
                 orderModule.checkOfferAcceptedStatus(list_id, function(result) {
-                    if (result === 0) {
-                        var errorMsg = 'No list item exist!!';
+                    if (result === false) {
+                        var errorMsg = 'Error occur!!';
                         sendResponse.sendErrorMessage(errorMsg, res);
-                    } else if (result === false) {
+                    } else if (result === 0) {
                         var errorMsg = 'You cannot accept this offer. This offer had been already accepted';
                         sendResponse.sendErrorMessage(errorMsg, res);
                     } else {
@@ -388,6 +388,7 @@ router.post('/acceptOffer', function(req, res, next) {
                                         var errorMsg = 'Unable to update status of order. Offer status is changeed to expire.';
                                         sendResponse.sendErrorMessage(errorMsg, res);
                                     } else {
+                                      console.log(result);
                                         var successMsg = 'Order and offer status updated to expire and in-progress respectively successfully!';
                                         sendResponse.successStatusMsg(successMsg, res)
                                     }

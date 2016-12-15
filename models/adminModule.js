@@ -4,10 +4,9 @@ var connection = require('./dbConnection');
 module.exports.approveUser = function(arrUser, callback) {
     var user_id = arrUser[1];
     var statusRequest = 'request';
-    var statusAccept = 'approveds'
+    var statusAccept = 'approved'
     var arrUpdate = [statusAccept, user_id, statusRequest];
-    //  var sql_requestUser = "SELECT user_id FROM user WHERE user_id = ? AND status = ?";
-    var sql_acceptUser = "UPDATE user SET status = ? WHERE user_id = ? AND status = ? ";
+    var sql_acceptUser = "UPDATE user SET status = ? WHERE user_id = ?";
 
     connection.query(sql_acceptUser, arrUpdate, function(error, result) {
         if (error) {
@@ -99,7 +98,7 @@ module.exports.offersByUser = function(arrUser, callback) {
 
 module.exports.acceptedOffersByUser = function(arrUser, callback) {
 
-    var sql_listUser = "SELECT sl.list_name, sl.items, ol.client_id, ol.freelancer_id FROM shopping_list sl INNER JOIN offer_list ol ON sl.list_id = ol.list_id WHERE ol.freelancer_id = ? AND ol.freelancer_id IS NOT NULL AND ol.status = 'accepted'"
+    var sql_listUser = "SELECT sl.list_name, sl.items, ol.client_id, ol.freelancer_id FROM shopping_list sl INNER JOIN offer_list ol ON sl.list_id = ol.list_id WHERE ol.freelancer_id = ? AND ol.status = 'accepted'"
 
     connection.query(sql_listUser, arrUser, function(error, resultRows, fields) {
         if (error) {
@@ -299,7 +298,7 @@ module.exports.deleteUser = function(user_id, callback) {
                 if (error) {
                     callback(false);
                 } else {
-                    connection.query(sql_deleteOffer, delOffer, function(error, result) {
+                    connection.query(sql_deleteOffer, delUser, function(error, result) {
                         if (error) {
                             callback(false);
                         } else {
