@@ -25,12 +25,11 @@ router.post('/login', function(req, res, next) {
     async.waterfall([
             function(callback) {
                 useFunction.checkFeilds(res, arrFeilds, callback);
-            }
-        ],
+
+          }],
         function(error, result) {
             sendResponse.sendSuccessData(arrFeilds, res);
         });
-
 });
 
 /*
@@ -569,10 +568,10 @@ router.get('/viewInProgressOrderByUser', function(req, res, next) {
  */
 router.get('/paidOffersByUser', function(req, res, next) {
     var admin_id = req.query.admin_id;
-    var freelancer_id = req.query.user_id;
+    var client_id = req.query.client_id;
     //  var list_id = req.query.list_id;
-    var arrAdmin = [admin_id, freelancer_id];
-    var arrUser = [freelancer_id];
+    var arrAdmin = [admin_id, client_id];
+    var arrUser = [client_id];
     async.waterfall([
             function(callback) {
                 useFunction.checkFeilds(res, arrAdmin, callback);
@@ -588,7 +587,7 @@ router.get('/paidOffersByUser', function(req, res, next) {
                         var errorMsg = "Unauthorized access!"
                         sendResponse.sendErrorMessage(errorMsg, res);
                     } else {
-                        adminModule.paidOffersByFreelancer(arrUser, function(result) {
+                        adminModule.paidOffersByUser(arrUser, function(result) {
                             if (result === false) {
                                 var errorMsg = "No list available tor this user";
                                 sendResponse.sendErrorMessage(errorMsg, res);
@@ -650,6 +649,73 @@ router.get('/deleteUser', function(req, res, next) {
                 });
             }
         });
+});
+
+
+/*
+ *----------------------------------------------
+ *API for admin FAQ
+ *INPUT: admin_id, question, answer
+ *OUTPUT: Success message
+ *----------------------------------------------
+ */
+
+router.post('/faq', function(req, res, next) {
+    var admin_id = req.body.admin_id;
+    var question = req.body.question;
+    var answer = req.body.answer;
+    var arrFields = [admin_id, question, answer];
+    console.log('is working');
+    async.waterfall([
+            function(callback) {
+                useFunction.checkFeilds(res, arrFields, callback);
+          }],
+        function(error, result) {
+          if (error) {
+            var errorMsg = "Error Occour!!";
+            sendResponse.sendErrorMessage(errorMsg, res);
+          } else {
+            adminModule.verifyAdmin(admin_id, function(result){
+              if (result===false) {
+                var errorMsg = "It seems you are not authorized user. Please login with admin credintials.";
+                sendResponse.sendErrorMessage(errorMsg, res);
+              } else {
+                arrFields = [question, answer];
+                adminModule.faq(arrFields, function(result){
+                  if (error) {
+                  var errorMsg = "Posting FAQ failed.";
+                  sendResponse.sendErrorMessage(errorMsg, res);
+                  } else {
+                    var successMsg = "FAQ postd successfully."
+                    sendResponse.successStatusMsg(successMsg, res);
+                  }
+                });
+
+              }
+            });
+          }
+        });
+});
+
+
+/*
+ *----------------------------------------------
+ *API for to view faq
+ *OUTPUT: display all testimonials
+ *----------------------------------------------
+ */
+
+router.get('/getFaq', function(req, res, next) {
+    console.log('is working');
+    adminModule.getFaq(function(result){
+      if (result===false) {
+        console.error(error);
+        var errorMsg = "Error occour";
+        sendResponse.sendErrorMessage(errorMsg, res);
+      } else {
+        sendResponse.sendSuccessData(result, res);
+      }
+    });
 });
 
 module.exports = router;

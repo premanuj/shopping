@@ -37,6 +37,31 @@ module.exports.verifyAdmin = function(admin_id, callback) {
     });
 };
 
+
+module.exports.faq = function(arrFaq, callback) {
+    var sql_addFaq = "INSERT INTO faq (question, answer) VALUES (?, ?)";
+    connection.query(sql_addFaq, arrFaq, function(error, resultRows) {
+        if (error) {
+            console.error(error);
+            callback(false);
+        } else {
+            callback(true);
+        }
+    });
+};
+
+module.exports.getFaq = function(callback) {
+    var sql_getFaq = "SELECT question, answer FROm faq";
+    connection.query(sql_getFaq, function(error, resultRows, fields) {
+        if (error) {
+            console.error(error);
+            callback(false);
+        } else {
+            callback(resultRows);
+        }
+    });
+};
+
 module.exports.viewUsers = function(admin_id, callback) {
     var sql_viewUsers = "SELECT user_id, username, email, status FROM user";
 
@@ -138,7 +163,7 @@ module.exports.paidOffersByFreelancer = function(arrUser, callback) {
 
 module.exports.paidOffersByUser = function(arrUser, callback) {
 
-    var sql_listUser = "SELECT DISTINCT sl.list_name, sl.items, ol.client_id, ol.freelancer_id, ol.status FROM shopping_list sl INNER JOIN offer_list ol ON sl.list_id = ol.list_id WHERE ol.clier_id = ? AND ol.status = 'paid'";
+    var sql_listUser = "SELECT sl.list_name, sl.items, ol.client_id, ol.freelancer_id, ol.sthodneatus FROM shopping_list sl INNER JOIN offer_list ol ON sl.list_id = ol.list_id WHERE ol.client_id = ? AND ol.status = 'paid'";
 
     connection.query(sql_listUser, arrUser, function(error, resultRows, fields) {
         if (error) {

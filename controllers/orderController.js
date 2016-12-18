@@ -405,6 +405,46 @@ router.post('/acceptOffer', function(req, res, next) {
 
 /*
  *---------------------------------------------------------------------------------------------------
+ *This API is used to mark status paid offer by freelancer
+ *INPUTS: offer_id, list_id, user_id
+ *OUTPUT: change offer status paid.
+ *----------------------------------------------------------------------------------------------------
+ */
+
+
+router.post('/paidOffer', function(req, res, next) {
+    var list_id = req.body.list_id;
+    var freelancer_id = req.body.freelancer_id;
+    var user_id = req.body.client_id;
+  //  var arrOrder = [offer_id, list_id, user_id];
+    var updateOfferStatus = [list_id, freelancer_id];
+    //var updateOrderStatus = ['in_progress', list_id, user_id];
+
+    async.waterfall([
+            function(callback) {
+                useFunction.checkFeilds(res, updateOfferStatus, callback);
+            }
+        ],
+        function(error, result) {
+            if (error) {
+                var errorMsg = "Error occured!!!";
+                sendResponse.sendErrorMessage(errorMsg, res);
+            } else {
+              orderModule.paidOffer(updateOfferStatus, function(result){
+                if (result===false) {
+                  var errorMsg = "Only accepted offer's status can be changed.";
+                  sendResponse.sendErrorMessage(errorMsg, res);
+                } else {
+                  var successMsg = "Status is marked as paid successfully.";
+                  sendResponse.successStatusMsg(successMsg, res);
+                }
+              });
+            }
+        });
+});
+
+/*
+ *---------------------------------------------------------------------------------------------------
  *This API is used to mark an order status finish
  *INPUTS: list_id, user_id
  *OUTPUT: change order status to finish.

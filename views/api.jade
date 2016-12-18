@@ -184,6 +184,20 @@ block content
                     input(type="submit")
                 hr
             div
+                h2 API: Change Offer status paid by freelencer
+                description: This api is used to mark an offer status as PAID by the freelancer-user after finishing the task.
+                p api_url: /order/paidOffer
+                p method: POST
+                form(action="/order/paidOffer", method="post")
+                    level list_id
+                    input(name="list_id", type="text")
+                    level client_id
+                    input(name="client_id", type="text")
+                    level freelancer_id
+                    input(name="freelancer_id" type="text")
+                    input(type="submit")
+                hr
+            div
                 h2 API: Review by client
                 description: This api is used to post review by client User who had hired the freelancer.
                 p api_url: /order/clientReview
@@ -294,7 +308,7 @@ block content
                     input(type="submit")
                 hr
             div
-                h2 API: View all offers made by freelencer.
+                h2 API: View all offers made by freelencer on particular order.
                 description: This api is used by admin to view all the offer posted by freelancer-user on particular order
                 p api_url: /admin/offersByUser
                 p method: GET
@@ -339,8 +353,8 @@ block content
                 form(action="/admin/paidOffersByUser", method="get")
                     level admin_id
                     input(name="admin_id", type="text")
-                    level user_id
-                    input(name="user_id", type="text")
+                    level client_id
+                    input(name="client_id", type="text")
                     input(type="submit")
                 hr
             div
@@ -407,5 +421,51 @@ block content
                     input(name="admin_id", type="text")
                     level user_id
                     input(name="user_id", type="text")
+                    input(type="submit")
+                hr
+            div
+                h2 API: Post Testimonials.
+                description: This api is used by user to post testimonials.
+                p api_url: /user/testimonials
+                p method: POST
+                form(action="/user/testimonials", method="post" enctype="multipart/form-data")
+                    level user_id
+                    input(name="user_id", type="text")
+                    level content
+                    input(name="content", type="text")
+                    level status
+                    input(name="status", type="text")
+                    level image_url
+                    input(name="image_url", type="file")
+                    input(type="submit")
+                hr
+            div
+                h2 API: View all Testimonials.
+                description: This api is used to view all testimonials. NOTE: status = 0 for happy customer & status = 1 is for we want work.
+                p api_url: /user/getTestimonials
+                p method: GET
+                form(action="/user/getTestimonials", method="get")
+                    input(type="submit")
+                hr
+            div
+                h2 API: Post Frequently Asked Questions by admin.
+                description: This api is used to post faq by admin.
+                p api_url: /admin/faq
+                p method: POST
+                form(action="/admin/faq", method="POST")
+                    level admin_id
+                    input(type="text", name="admin_id")
+                    level question
+                    input(type="text", name="question")
+                    level answer
+                    input(type="text", name="answer")
+                    input(type="submit")
+                hr
+            div
+                h2 API: GET all Frequently Asked Questions.
+                description: This api is used to get all faqs.
+                p api_url: /admin/getFaq
+                p method: GET
+                form(action="/admin/getFaq", method="GET")
                     input(type="submit")
                 hr

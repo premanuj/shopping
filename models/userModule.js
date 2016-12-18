@@ -14,7 +14,7 @@ module.exports.registration = function(arrUser, callback) {
 }
 
 module.exports.verify_email = function(email, verification_token, callback) {
-  
+
     var str = "<h2> Welcome to shopping ............ </h2>";
     str += "<p>Congratulation, You have created your account successfully.</p>";
     str += "<p>Get the best services </p>";
@@ -210,33 +210,78 @@ module.exports.userProfile = function(id, cb) {
                       cb(list);
                     }
                   });
-                    // if (listRows.length === 0) {
-                    //     var nolist = {
-                    //         order_list: 'No shopping list available for this user.'
-                    //     };
-                    //     basicUserInfo = {
-                    //         basicUserInfo: basicUserInfo
-                    //     };
-                    //     var list = { "user_info": basicUserInfo.basicUserInfo, "shoppingInfo": nolist };
-                    //     cb(list);
-                    // } else {
-                    //     basicUserInfo = {
-                    //         basicUserInfo: basicUserInfo
-                    //     };
-                    //     shoppingInfo = {
-                    //         shoppingInfo: listRows
-                    //     };
-                    //     console.log('rows');
-                    //     console.log(listRows.length);
-                    //      var list = { "user_info": basicUserInfo.basicUserInfo, "shoppingInfo": shoppingInfo.shoppingInfo };
-                    //     cb(list);
-                    // }
                 }
             });
 
         }
     });
 }
+
+/*
+ *------------------------------------------
+ *This check the valid user_id
+ *-------------------------------------------
+ */
+
+ module.exports.checkUserId = function(user_id, callback){
+   var sql = "SELECT * FROM user WHERE user_id = ?";
+   connection.query(sql, user_id, function(error, resultRows, fields){
+     if (error) {
+       console.error(error);
+     } else {
+       if(resultRows===0){
+         callback(false);
+       }else {
+         callback(true);
+       }
+     }
+   });
+ }
+
+/*
+ *------------------------------------------
+ *This is used to post testimonials
+ *-------------------------------------------
+ */
+
+ module.exports.testimonials = function(arrTestimonials, callback){
+   var sql = "INSERT INTO testimonials (user_id, content, status, image_url) VALUES (?, ?, ?, ?)";
+   connection.query(sql, arrTestimonials, function(error, resultRows, fields){
+     if (error) {
+       console.log("errrrr00000000rrrr");
+       console.error(error);
+       callback(false);
+     } else {
+       console.log("workingggggggggggg............");
+       if(resultRows.length===0){
+         callback(false);
+       }else {
+         callback(true);
+       }
+     }
+   });
+ }
+
+/*
+ *------------------------------------------
+ *This is used to get testimonials
+ *-------------------------------------------
+ */
+
+ module.exports.getTestimonials = function(callback){
+   var sql = "SELECT * FROM testimonials";
+   connection.query(sql, function(error, resultRows, fields){
+     if (error) {
+       console.log("errrrr00000000rrrr");
+       console.error(error);
+       callback(false);
+     } else {
+       callback(resultRows)
+     }
+   });
+ }
+
+
 
 /*
  *--------------------------------------------------

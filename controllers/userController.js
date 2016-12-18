@@ -93,32 +93,6 @@ router.post('/registration', upload.single('image_url'), function(req, res, next
             } else {
                 console.log('working');
                 async.parallel([
-                        // /*
-                        //  *-----------------------------------------------------------------
-                        //  *Code for encryption of password, access_token, verification_token
-                        //  *Applied For: password, access_token, verification_token
-                        //  */
-                        // function(callback) {
-                        //     //Encryption for password
-                        //     callback(null, password);
-                        //
-                        // },
-                        // function(callback) {
-                        //     //Encryption for access_token
-                        //     bcrypt.genSalt(passwordRounds, function(err, salt) {
-                        //         bcrypt.hash(myPlaintextPassword, salt, function(err, access_token) {
-                        //             callback(null, access_token);
-                        //         });
-                        //     });
-                        // },
-                        // function(callback) {
-                        //     //Encryption for verification_token
-                        //     bcrypt.genSalt(passwordRounds, function(err, salt) {
-                        //         bcrypt.hash(myPlaintextPassword, salt, function(err, verification_token) {
-                        //             callback(null, verification_token);
-                        //         });
-                        //     });
-                        // }
 
                         /*
                          *-----------------------------------------------------------------
@@ -352,26 +326,91 @@ router.get('/userprofile', function(req, res) {
             console.error(errorMsg);
             sendResponse.sendErrorMessage(errorMsg, res);
         } else {
-            console.log('Success: ' + result);
-            console.log(result);
             sendResponse.sendSuccessData(result, res)
         }
     });
 });
 
+/*
+ *----------------------------------------------------------------------
+ *This API is post testimonials by user
+ *INPUT: user_id, content, status, image_url
+ OUTPUT: Successfull post
+ *----------------------------------------------------------------------
+ */
+router.post('/testimonials', upload.single('image_url'), function(req, res) {
+    var user_id = req.body.user_id;
+    var content = req.body.content;
+    var status = req.body.status;
+    var image_url = req.file.filename;
+    var arrFields = [user_id, content, status];
+    var arrTestimonials = [user_id, content, status, image_url];
+    console.log(arrTestimonials);
+    async.waterfall([
+            function(callback){
+              useFunction.checkFeilds();
+            },
+            function(callback) {
+                userModule.checkUserId(user_id, function(result) {
+                    if (result === false) {
+                        var errorMsg = "Invalid user_id. User doesnot exist.";
+                        sendResponse.sendErrorMessage(errorMsg, res);
+                    } else {
+                      console.log("here");
+                        callback();
+                    }
+                });
+            }
+        ],
+        function(error, result) {
+            if (error) {
+                var errorMsg = "Error occured!!!";
+                sendResponse.sendErrorMessage(errorMsg, res);
+            } else {
+                userModule.testimonials(arrTestimonials, function(result) {
+                    if (result === false) {
+                        var errorMsg = "Posting testinonials failed";
+                        sendResponse.sendErrorMessage(errorMsg, res);
+                    } else {
+                        var successMsg = "Testimonials posted successfully.";
+                        sendResponse.successStatusMsg(successMsg, res);
+                    }
+                });
+            }
+        });
+});
 
 
 /*
  *----------------------------------------------------------------------
- *This API is used check the eithr the username is available or not.
- *Function Parameter: username
+ *This API is post testimonials by user
+ *INPUT: user_id, content, status, image_url
+ OUTPUT: Successfull post
+ *----------------------------------------------------------------------
+ */
+router.get('/getTestimonials', function(req, res) {
+  userModule.getTestimonials(function(result){
+    if (result===false) {
+      var errorMsg = "Unable to get testimonials";
+      sendResponse.sendErrorMessage(errorMsg, res);
+    } else {
+      sendResponse.sendSuccessData(result, res);
+    }
+  });
+});
+
+
+/*
+ *----------------------------------------------------------------------
+ *This API is used check the available user.
+ *Function Parameter: user_id
  *----------------------------------------------------------------------
  */
 
-function checkUsername(res, username, callback) {
-    userModule.checkUsername(username, function(result) {
+function checkUsername(res, user_id, callback) {
+    userModule.checkUsername(user_id, function(result) {
         if (result) {
-            var errorMsg = 'Username Already Exist';
+            var errorMsg = "Invalid user_id. User doesn't exist";
             sendResponse.sendErrorMessage(errorMsg, res);
         } else {
             callback();

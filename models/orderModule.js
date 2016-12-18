@@ -193,6 +193,19 @@ module.exports.acceptOffer = function(arrOrder, callback) {
 }
 
 
+module.exports.paidOffer = function(arrOffer, callback){
+  sql_updateOffer = "UPDATE offer_list set status = 'paid' where list_id = ? and freelancer_id = ? and status = 'accepted'";
+  connection.query(sql_updateOffer, arrOffer, function(error, result){
+    if (error) {
+      console.error("error:...");
+      console.error(error);
+      callback(false);
+    } else {
+      callback(true);
+    }
+  });
+}
+
 module.exports.progerssOrder = function(arrOrder, callback) {
     var sql = "UPDATE shopping_list SET status = ? WHERE list_id = ? AND user_id = ?";
 
@@ -286,6 +299,7 @@ module.exports.clientReview = function(review, callback) {
     var freelancer_id = review[2];
     var list_id = review[3];
     var arrReview = [review_by_client, list_id, client_id, freelancer_id];
+    console.log(arrReview);
     console.log(arrReview);
     var sql = "UPDATE offer_list SET review = ? WHERE list_id = ? AND client_id = ? AND freelancer_id = ?";
     connection.query(sql, arrReview, function(error, statusRows) {
