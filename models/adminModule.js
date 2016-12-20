@@ -62,6 +62,18 @@ module.exports.getFaq = function(callback) {
     });
 };
 
+module.exports.deleteFaq = function(id, callback) {
+    var sql_deleteFaq = "DELETE FROM faq WHERE faq_id = ?";
+    connection.query(sql_deleteFaq, id, function(error, resultRows, fields) {
+        if (error) {
+            console.error(error);
+            callback(false);
+        } else {
+            callback(true);
+        }
+    });
+};
+
 module.exports.viewUsers = function(admin_id, callback) {
     var sql_viewUsers = "SELECT user_id, username, email, status FROM user";
 

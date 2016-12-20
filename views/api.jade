@@ -448,6 +448,16 @@ block content
                     input(type="submit")
                 hr
             div
+                h2 API: Delete a Testimonials.
+                description: This api is used to delete testimonials.
+                p api_url: /user/deleteTestimonials
+                p method: GET
+                form(action="/user/deleteTestimonials", method="get")
+                    level id
+                    input(type="text", name="id")
+                    input(type="submit")
+                hr
+            div
                 h2 API: Post Frequently Asked Questions by admin.
                 description: This api is used to post faq by admin.
                 p api_url: /admin/faq
@@ -467,5 +477,15 @@ block content
                 p api_url: /admin/getFaq
                 p method: GET
                 form(action="/admin/getFaq", method="GET")
+                    input(type="submit")
+                hr
+            div
+                h2 API: Delete single Frequently Asked Questions.
+                description: This api is used to delete faqs.
+                p api_url: /admin/deleteFaq
+                p method: GET
+                form(action="/admin/deleteFaq", method="GET")
+                    level id
+                    input(type="text", name="id")
                     input(type="submit")
                 hr

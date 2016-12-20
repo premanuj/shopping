@@ -698,10 +698,23 @@ router.post('/faq', function(req, res, next) {
 });
 
 
+router.get('/deleteFaq', function(req, res, next){
+  var id = req.query.id;
+  adminModule.deleteFaq(id, function(result){
+    if (result===false) {
+      var errorMsg = "Unable to delete....";
+      sendResponse.sendErrorMessage(errorMsg, res);
+    } else {
+      var successMsg = "Faq deleted successfully.";
+      sendResponse.successStatusMsg(successMsg, res);
+    }
+  });
+});
+
 /*
  *----------------------------------------------
  *API for to view faq
- *OUTPUT: display all testimonials
+ *OUTPUT: display all faq
  *----------------------------------------------
  */
 

@@ -339,27 +339,15 @@ router.get('/userprofile', function(req, res) {
  *----------------------------------------------------------------------
  */
 router.post('/testimonials', upload.single('image_url'), function(req, res) {
-    var user_id = req.body.user_id;
     var content = req.body.content;
     var status = req.body.status;
     var image_url = req.file.filename;
-    var arrFields = [user_id, content, status];
-    var arrTestimonials = [user_id, content, status, image_url];
+    var arrFields = [content, status];
+    var arrTestimonials = [content, status, image_url];
     console.log(arrTestimonials);
     async.waterfall([
             function(callback){
-              useFunction.checkFeilds();
-            },
-            function(callback) {
-                userModule.checkUserId(user_id, function(result) {
-                    if (result === false) {
-                        var errorMsg = "Invalid user_id. User doesnot exist.";
-                        sendResponse.sendErrorMessage(errorMsg, res);
-                    } else {
-                      console.log("here");
-                        callback();
-                    }
-                });
+              useFunction.checkFeilds(res, arrFields, callback);
             }
         ],
         function(error, result) {
@@ -395,6 +383,19 @@ router.get('/getTestimonials', function(req, res) {
       sendResponse.sendErrorMessage(errorMsg, res);
     } else {
       sendResponse.sendSuccessData(result, res);
+    }
+  });
+});
+
+router.get('/deleteTestimonials', function(req,res){
+  var id = req.query.id;
+  userModule.deleteTestimonials(id, function(result){
+    if (result===false) {
+      var errorMsg = "Unable to delete Testimonials."
+      sendResponse.sendErrorMessage(errorMsg, res);
+    } else {
+      var successMsg = "Testimonials deleted Successfully."
+      sendResponse.successStatusMsg(successMsg, res);
     }
   });
 });

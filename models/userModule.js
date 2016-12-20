@@ -245,7 +245,7 @@ module.exports.userProfile = function(id, cb) {
  */
 
  module.exports.testimonials = function(arrTestimonials, callback){
-   var sql = "INSERT INTO testimonials (user_id, content, status, image_url) VALUES (?, ?, ?, ?)";
+   var sql = "INSERT INTO testimonials (content, status, image_url) VALUES (?, ?, ?)";
    connection.query(sql, arrTestimonials, function(error, resultRows, fields){
      if (error) {
        console.log("errrrr00000000rrrr");
@@ -281,7 +281,16 @@ module.exports.userProfile = function(id, cb) {
    });
  }
 
-
+module.exports.deleteTestimonials = function(id, callback){
+  var sql_deleteTestimonials = "Delete from testimonials where t_id = ?";
+  connection.query(sql_deleteTestimonials, id, function(error, result){
+    if (error) {
+      callback(false);
+    }else {
+      callback(true);
+    }
+  });
+}
 
 /*
  *--------------------------------------------------
