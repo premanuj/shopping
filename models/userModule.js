@@ -173,8 +173,8 @@ module.exports.userProfile = function(id, cb) {
     id = [id];
     var sql_basicUserInfo = "SELECT * FROM user WHERE user_id=?";
     //var sql_profileInfo = "SELECT sl.user_id, sl.list_name, sl.items, sl.status, ol.review FROM shopping_list as sl INNER JOIN offer_list as ol ON sl.user_id = ol.client_id WHERE sl.user_id = ?";
-      var sql_profileInfo = "SELECT user_id, list_name, items, status FROM shopping_list WHERE user_id = ?";
-      var sql_profileOffer = "SELECT review FROM offer_list WHERE freelancer_id = ? AND freelancer_id IS NOT NULL";
+      var sql_profileInfo = "SELECT user_id, list_name, list_id, items, status FROM shopping_list WHERE user_id = ?";
+      var sql_profileOffer = "SELECT list_id, review FROM offer_list WHERE freelancer_id = ? AND freelancer_id IS NOT NULL";
     var shoppingList = [];
     connection.query(sql_basicUserInfo, id, function(err, userRows, fields) {
         if (userRows.length === 0) {
@@ -187,27 +187,27 @@ module.exports.userProfile = function(id, cb) {
                 email: userRows[0]['email'],
                 about_me: userRows[0]['about_me']
             };
-            basicUserInfo = {"basicUserInfo": basicUserInfo}
-            list.push(basicUserInfo);
+            //basicUserInfo = {"basicUserInfo": basicUserInfo}
+            //list.push({"basicUserInfo": basicUserInfo});
             connection.query(sql_profileInfo, id, function(err, shoppingRows, fields) {
                 if (err) {
                     console.error('profileInfo err: ' + err);
                     cb(false);
                 } else {
                 //  console.log(shoppingRows[0]);
-                  var shoppingUserInfo = {"shoppingUserInfo":shoppingRows};
-                  console.log(shoppingUserInfo);
-                  list.push(shoppingUserInfo);
+                //  var shoppingUserInfo = {"shoppingUserInfo":shoppingRows};
+                  //list.push({"shoppingUserInfo":shoppingRows});
 
                   connection.query(sql_profileOffer, id, function(error, offerRows, fields){
                     if (error) {
                       cb(false)
                     } else {
                       var offerUserInfo = {"offerRows":offerRows};
-                      list.push(offerUserInfo.offerRows);
+                      list.push({basicUserInfo, shoppingRows, offerRows});
+                      //list.push(offerUserInfo[0]);
                       console.log(list);
                       //var list = {"user_info": basicUserInfo, "shoppingInfo": shoppingUserInfo[0], "offer_info": offerUserInfo};
-                      cb(list);
+                      cb(list[0]);
                     }
                   });
                 }
