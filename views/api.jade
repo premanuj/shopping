@@ -429,8 +429,8 @@ block content
                 p api_url: /user/testimonials
                 p method: POST
                 form(action="/user/testimonials", method="post" enctype="multipart/form-data")
-                    level user_id
-                    input(name="user_id", type="text")
+                    level name
+                    input(name="name", type="text")
                     level content
                     input(name="content", type="text")
                     level status

@@ -339,11 +339,12 @@ router.get('/userprofile', function(req, res) {
  *----------------------------------------------------------------------
  */
 router.post('/testimonials', upload.single('image_url'), function(req, res) {
+    var name = req.body.name;
     var content = req.body.content;
     var status = req.body.status;
     var image_url = req.file.filename;
     var arrFields = [content, status];
-    var arrTestimonials = [content, status, image_url];
+    var arrTestimonials = [name, content, status, image_url];
     console.log(arrTestimonials);
     async.waterfall([
             function(callback){

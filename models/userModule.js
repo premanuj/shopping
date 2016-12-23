@@ -245,7 +245,7 @@ module.exports.userProfile = function(id, cb) {
  */
 
  module.exports.testimonials = function(arrTestimonials, callback){
-   var sql = "INSERT INTO testimonials (content, status, image_url) VALUES (?, ?, ?)";
+   var sql = "INSERT INTO testimonials (name, content, status, image_url) VALUES (?, ?, ?, ?)";
    connection.query(sql, arrTestimonials, function(error, resultRows, fields){
      if (error) {
        console.log("errrrr00000000rrrr");
