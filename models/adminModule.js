@@ -51,7 +51,7 @@ module.exports.faq = function(arrFaq, callback) {
 };
 
 module.exports.getFaq = function(callback) {
-    var sql_getFaq = "SELECT question, answer FROm faq";
+    var sql_getFaq = "SELECT * FROm faq";
     connection.query(sql_getFaq, function(error, resultRows, fields) {
         if (error) {
             console.error(error);
